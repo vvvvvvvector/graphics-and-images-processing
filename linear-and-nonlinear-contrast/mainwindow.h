@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
 #include <QImage>
 
 QT_BEGIN_NAMESPACE
@@ -31,7 +30,8 @@ public slots:
 
 private slots:
     void on_actionOpen_triggered();
-    void on_horizontalSlider_valueChanged(int value);
+    void on_linear_valueChanged(int value);
+    void on_nonlinear_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;
