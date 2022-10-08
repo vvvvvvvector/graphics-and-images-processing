@@ -12,7 +12,9 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     QImage original_image;
-    QImage hist_image;
+    QImage hist_image_r;
+    QImage hist_image_g;
+    QImage hist_image_b;
 
 public:
     MainWindow(QWidget *parent = nullptr);
