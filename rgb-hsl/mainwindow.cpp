@@ -119,8 +119,31 @@ void rgb2hsl(uchar r, uchar g, uchar b, float &h, float &s, float &l) {
     }
 }
 
-void hue(QImage &src, QImage &dst, float dl) {
-    // hello world
+void hue(QImage &src, QImage &dst, float dh) {
+    for (int y = 0; y < src.height(); y++) {
+        QRgb *pixel_src = (QRgb*)src.scanLine(y);
+        QRgb *pixel_dst = (QRgb*)dst.scanLine(y);
+
+        for (int x = 0; x < src.width(); x++) {
+            uchar r = qRed(pixel_src[x]);
+            uchar g = qGreen(pixel_src[x]);
+            uchar b = qBlue(pixel_src[x]);
+
+            float h, s, l;
+
+            rgb2hsl(r, g, b, h, s, l);
+
+            h += dh;
+
+            if (h > 360.0f) {
+                h -= 360.0f;
+            }
+
+            hsl2rgb(h, s, l, r, g, b);
+
+            pixel_dst[x] = qRgb(r, g, b);
+        }
+    }
 }
 
 void saturation(QImage &src, QImage &dst, float ds) {
@@ -174,6 +197,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ui->image->setText("Image here");
 }
 
 MainWindow::~MainWindow()
@@ -187,11 +212,11 @@ void MainWindow::openImage() {
     if (!fileName.isNull()) {
         original_image.load(fileName);
         process_image = original_image;
-        ui->image->setPixmap(QPixmap::fromImage(original_image));
+        ui->image->setPixmap(QPixmap::fromImage(process_image));
     }
 }
 
-void MainWindow::on_actionOpen_triggered()
+void MainWindow::on_action_open_triggered()
 {
     openImage();
 }
@@ -200,7 +225,7 @@ void MainWindow::on_h_slider_valueChanged(int value)
 {
     float dh = 0.0f;
 
-    // dh = value / 100.0f;
+    dh = value;
 
     hue(original_image, process_image, dh);
     ui->image->setPixmap(QPixmap::fromImage(process_image));

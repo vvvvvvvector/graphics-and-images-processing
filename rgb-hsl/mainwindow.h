@@ -30,13 +30,13 @@ public slots:
     void openImage();
 
 private slots:
-    void on_actionOpen_triggered();
-
     void on_l_slider_valueChanged(int value);
 
     void on_s_slider_valueChanged(int value);
 
     void on_h_slider_valueChanged(int value);
+
+    void on_action_open_triggered();
 
 private:
     Ui::MainWindow *ui;
