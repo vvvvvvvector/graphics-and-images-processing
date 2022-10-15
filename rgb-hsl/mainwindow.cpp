@@ -119,7 +119,7 @@ void rgb2hsl(uchar r, uchar g, uchar b, float &h, float &s, float &l) {
     }
 }
 
-void hue(QImage &src, QImage &dst, float dh) {
+void process(const QImage &src, QImage &dst, float dh, float ds, float dl) {
     for (int y = 0; y < src.height(); y++) {
         QRgb *pixel_src = (QRgb*)src.scanLine(y);
         QRgb *pixel_dst = (QRgb*)dst.scanLine(y);
@@ -139,49 +139,7 @@ void hue(QImage &src, QImage &dst, float dh) {
                 h -= 360.0f;
             }
 
-            hsl2rgb(h, s, l, r, g, b);
-
-            pixel_dst[x] = qRgb(r, g, b);
-        }
-    }
-}
-
-void saturation(QImage &src, QImage &dst, float ds) {
-    for (int y = 0; y < src.height(); y++) {
-        QRgb *pixel_src = (QRgb*)src.scanLine(y);
-        QRgb *pixel_dst = (QRgb*)dst.scanLine(y);
-
-        for (int x = 0; x < src.width(); x++) {
-            uchar r = qRed(pixel_src[x]);
-            uchar g = qGreen(pixel_src[x]);
-            uchar b = qBlue(pixel_src[x]);
-
-            float h, s, l;
-
-            rgb2hsl(r, g, b, h, s, l);
-
             s = clamp<float>(s + ds, 0.0f, 1.0f);
-
-            hsl2rgb(h, s, l, r, g, b);
-
-            pixel_dst[x] = qRgb(r, g, b);
-        }
-    }
-}
-
-void lightness(QImage &src, QImage &dst, float dl) {
-    for (int y = 0; y < src.height(); y++) {
-        QRgb *pixel_src = (QRgb*)src.scanLine(y);
-        QRgb *pixel_dst = (QRgb*)dst.scanLine(y);
-
-        for (int x = 0; x < src.width(); x++) {
-            uchar r = qRed(pixel_src[x]);
-            uchar g = qGreen(pixel_src[x]);
-            uchar b = qBlue(pixel_src[x]);
-
-            float h, s, l;
-
-            rgb2hsl(r, g, b, h, s, l);
 
             l = clamp<float>(l + dl, 0.0f, 1.0f);
 
@@ -223,31 +181,19 @@ void MainWindow::on_action_open_triggered()
 
 void MainWindow::on_h_slider_valueChanged(int value)
 {
-    float dh = 0.0f;
-
-    dh = value;
-
-    hue(original_image, process_image, dh);
+    process(original_image, process_image, (float) value, ui->s_slider->value() / 100.0f, ui->l_slider->value() / 100.0f);
     ui->image->setPixmap(QPixmap::fromImage(process_image));
 }
 
 void MainWindow::on_s_slider_valueChanged(int value)
 {
-    float ds = 0.0f;
-
-    ds = value / 100.0f;
-
-    saturation(original_image, process_image, ds);
+    process(original_image, process_image, (float) ui->h_slider->value(), value / 100.0f, ui->l_slider->value() / 100.0f);
     ui->image->setPixmap(QPixmap::fromImage(process_image));
 }
 
 void MainWindow::on_l_slider_valueChanged(int value)
 {
-    float dl = 0.0f;
-
-    dl = value / 100.0f;
-
-    lightness(original_image, process_image, dl);
+    process(original_image, process_image, (float) ui->h_slider->value(), ui->s_slider->value() / 100.0f, value / 100.0f);
     ui->image->setPixmap(QPixmap::fromImage(process_image));
 }
 
