@@ -137,9 +137,9 @@ void xyz2rgb(float x, float y, float z, uchar &r, uchar &g, uchar &b) {
         fb = 1.055f * std::pow(fb, 1.0f / 2.4f) - 0.055f;
     }
 
-    r = uchar(fr * 255);
-    g = uchar(fg * 255);
-    b = uchar(fb * 255);
+    r = clamp<int>(fr * 255, 0, 255);
+    g = clamp<int>(fg * 255, 0, 255);
+    b = clamp<int>(fb * 255, 0, 255);
 
     // qInfo() << r << " " << g << " " << b << "\n";
 }
