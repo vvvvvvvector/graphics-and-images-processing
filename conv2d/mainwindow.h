@@ -8,6 +8,13 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+template<class T>
+T clamp(T v, T minv, T maxv) {
+    if (v >= maxv) return maxv;
+    if (v <= minv) return minv;
+    return v;
+}
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
