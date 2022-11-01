@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
+#include <cmath>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -33,14 +34,93 @@ QImage make_image_with_borders(const QImage &src, int r) {
     return image_with_borders;
 }
 
-void apply_median_filter(const QImage &image_with_borders, QImage &dst, int r) {
-    int w = image_with_borders.width();
+void apply_optimized_median_filter(const QImage &src, QImage &dst, int r) {
+    int w = src.width();
 
     for (int y = 0; y < dst.height(); y++) {
-        for (int x = 0; x < dst.width(); x++) {
-            QRgb *pixel_src = (QRgb*) image_with_borders.scanLine(y + r);
-            QRgb *pixel_dst = (QRgb*) dst.scanLine(y);
+        QRgb *pixel_src = (QRgb*) src.scanLine(y + r);
+        QRgb *pixel_dst = (QRgb*) dst.scanLine(y);
 
+        float red_hist[256] = {0.0f};
+        float green_hist[256] = {0.0f};
+        float blue_hist[256] = {0.0f};
+
+        for (int x = 0; x < dst.width(); x++) {
+            int red = 0, green = 0, blue = 0;
+
+            if (x == 0) {
+                for (int iy = -r; iy <= r; iy++) {
+                    for (int ix = -r; ix <= r; ix++) {
+                        red_hist[qRed(pixel_src[x + r + ix + iy * w])]++;
+                        green_hist[qGreen(pixel_src[x + r + ix + iy * w])]++;
+                        blue_hist[qBlue(pixel_src[x + r + ix + iy * w])]++;
+                    }
+                }
+            } else {
+                for (int i = -r; i <= r; i++) {
+                    red_hist[qRed(pixel_src[x - 1 + i * w])]--;
+                    red_hist[qRed(pixel_src[(2 * r + 1) + x + i * w])]++;
+
+                    green_hist[qGreen(pixel_src[x - 1 + i * w])]--;
+                    green_hist[qGreen(pixel_src[(2 * r + 1) + x + i * w])]++;
+
+                    blue_hist[qBlue(pixel_src[x - 1 + i * w])]--;
+                    blue_hist[qBlue(pixel_src[(2 * r + 1) + x + i * w])]++;
+                }
+            }
+
+            float r_count = 0.0f;
+            bool red_value_founded = false;
+
+            for (int i = 0; i < 256 && !red_value_founded; i++) {
+                r_count += red_hist[i];
+
+                if (r_count > pow(2 * r + 1, 2) / 2.0) {
+                    red = i;
+
+                    red_value_founded = true;
+                }
+            }
+
+            float g_count = 0.0f;
+            bool green_value_founded = false;
+
+            for (int i = 0; i < 256 && !green_value_founded; i++) {
+                g_count += green_hist[i];
+
+                if (g_count > pow(2 * r + 1, 2) / 2.0) {
+                    green = i;
+
+                    green_value_founded = true;
+                }
+            }
+
+            float b_count = 0.0f;
+            bool blue_value_founded = false;
+
+            for (int i = 0; i < 256 && !blue_value_founded; i++) {
+                b_count += blue_hist[i];
+
+                if (b_count > pow(2 * r + 1, 2) / 2.0) {
+                    blue = i;
+
+                    blue_value_founded = true;
+                }
+            }
+
+            pixel_dst[x] = qRgb(red, green, blue);
+        }
+    }
+}
+
+void apply_median_filter(const QImage &src, QImage &dst, int r) {
+    int w = src.width();
+
+    for (int y = 0; y < dst.height(); y++) {
+        QRgb *pixel_src = (QRgb*) src.scanLine(y + r);
+        QRgb *pixel_dst = (QRgb*) dst.scanLine(y);
+
+        for (int x = 0; x < dst.width(); x++) {
             std::vector<int> mask_values_red;
             std::vector<int> mask_values_green;
             std::vector<int> mask_values_blue;
@@ -75,14 +155,16 @@ void MainWindow::open_image() {
     if (!file_name.isNull()) {
         original_image.load(file_name);
 
-        int r = 10;
+        int r = 15;
 
         QImage destination_image = QImage(original_image.width(), original_image.height(), original_image.format());
         destination_image.fill(Qt::white);
 
         QImage image_with_borders = make_image_with_borders(original_image, r);
 
-        apply_median_filter(image_with_borders, destination_image, r);
+        // apply_median_filter(image_with_borders, destination_image, r);
+
+        apply_optimized_median_filter(image_with_borders, destination_image, r);
 
         ui->original_image->setPixmap(QPixmap::fromImage(image_with_borders));
         ui->destination_image->setPixmap(QPixmap::fromImage(destination_image));
