@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
+#include <cmath>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -33,7 +34,7 @@ QImage make_image_with_borders(const QImage &src, int r) {
     return image_with_borders;
 }
 
-void apply_separable_gauss_filter(const QImage &src, QImage &dst, std::vector<int> mask, int r) {
+void apply_separable_gauss_filter(const QImage &src, QImage &dst, std::vector<float> mask, int r) {
     QImage intermediate_image = src;
 
     for (int y = 0; y < dst.height(); y++) {
@@ -51,9 +52,9 @@ void apply_separable_gauss_filter(const QImage &src, QImage &dst, std::vector<in
                 blue += qBlue(pixel_src[x + r + i]) * mask[mask_index];
             }
 
-            red = clamp<int>(red / 10, 0, 255);
-            green = clamp<int>(green / 10, 0, 255);
-            blue = clamp<int>(blue / 10, 0, 255);
+            red = clamp<int>(red, 0, 255);
+            green = clamp<int>(green, 0, 255);
+            blue = clamp<int>(blue, 0, 255);
 
             pixel_intermediate[x + r] = qRgb(red, green, blue);
         }
@@ -76,16 +77,32 @@ void apply_separable_gauss_filter(const QImage &src, QImage &dst, std::vector<in
                 blue += qBlue(pixel_intermediate[x + r + i * w]) * mask[mask_index];
             }
 
-            red = clamp<int>(red / 10, 0, 255);
-            green = clamp<int>(green / 10, 0, 255);
-            blue = clamp<int>(blue / 10, 0, 255);
+            red = clamp<int>(red, 0, 255);
+            green = clamp<int>(green, 0, 255);
+            blue = clamp<int>(blue, 0, 255);
 
             pixel_dst[x] = qRgb(red, green, blue);
         }
     }
 }
 
+std::vector<float> generate_gauss_mask(int radius) {
+    std::vector<float> mask;
 
+    float sigma = (2 * radius + 1) / 2 * M_PI;
+
+    for (int i = -radius; i <= radius; i++) {
+        mask.push_back((exp(-(pow(i, 2))/(2 * pow(sigma, 2)))) / (sqrt(2 * M_PI) * sigma));
+    }
+
+    float mask_elements_sum = std::accumulate(mask.begin(), mask.end(), 0.0f);
+
+    for (unsigned long i = 0; i < mask.size(); i++) {
+        mask[i] /= mask_elements_sum;
+    }
+
+    return mask;
+}
 
 void MainWindow::open_image() {
     QString file_name = QFileDialog::getOpenFileName();
@@ -93,9 +110,9 @@ void MainWindow::open_image() {
     if (!file_name.isNull()) {
         original_image.load(file_name);
 
-        int r = 2;
+        int r = 7;
 
-        std::vector<int> mask = {1, 2, 4, 2, 1};
+        std::vector<float> mask = generate_gauss_mask(r);
 
         QImage destination_image = QImage(original_image.width(), original_image.height(), original_image.format());
         destination_image.fill(Qt::white);
