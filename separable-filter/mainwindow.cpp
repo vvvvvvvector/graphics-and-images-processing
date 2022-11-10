@@ -34,8 +34,10 @@ QImage make_image_with_borders(const QImage &src, int r) {
     return image_with_borders;
 }
 
-void apply_separable_gauss_filter(const QImage &src, QImage &dst, std::vector<float> mask, int r) {
+void apply_separable_gauss_filter(const QImage &src, QImage &dst, std::vector<int> mask, int r) {
     QImage intermediate_image = src;
+
+    int mask_elements_sum = std::accumulate(mask.begin(), mask.end(), 0);
 
     for (int y = 0; y < dst.height(); y++) {
         QRgb *pixel_src = (QRgb*) src.scanLine(y + r);
@@ -52,9 +54,9 @@ void apply_separable_gauss_filter(const QImage &src, QImage &dst, std::vector<fl
                 blue += qBlue(pixel_src[x + r + i]) * mask[mask_index];
             }
 
-            red = clamp<int>(red, 0, 255);
-            green = clamp<int>(green, 0, 255);
-            blue = clamp<int>(blue, 0, 255);
+            red = clamp<int>(red / mask_elements_sum, 0, 255);
+            green = clamp<int>(green / mask_elements_sum, 0, 255);
+            blue = clamp<int>(blue / mask_elements_sum, 0, 255);
 
             pixel_intermediate[x + r] = qRgb(red, green, blue);
         }
@@ -77,28 +79,22 @@ void apply_separable_gauss_filter(const QImage &src, QImage &dst, std::vector<fl
                 blue += qBlue(pixel_intermediate[x + r + i * w]) * mask[mask_index];
             }
 
-            red = clamp<int>(red, 0, 255);
-            green = clamp<int>(green, 0, 255);
-            blue = clamp<int>(blue, 0, 255);
+            red = clamp<int>(red / mask_elements_sum, 0, 255);
+            green = clamp<int>(green / mask_elements_sum, 0, 255);
+            blue = clamp<int>(blue / mask_elements_sum, 0, 255);
 
             pixel_dst[x] = qRgb(red, green, blue);
         }
     }
 }
 
-std::vector<float> generate_gauss_mask(int radius) {
-    std::vector<float> mask;
+std::vector<int> generate_gauss_mask(int radius) {
+    std::vector<int> mask;
 
-    float sigma = (2 * radius + 1) / 2 * M_PI;
+    float sigma = (2 * radius + 1) / 6;
 
     for (int i = -radius; i <= radius; i++) {
-        mask.push_back((exp(-(pow(i, 2))/(2 * pow(sigma, 2)))) / (sqrt(2 * M_PI) * sigma));
-    }
-
-    float mask_elements_sum = std::accumulate(mask.begin(), mask.end(), 0.0f);
-
-    for (unsigned long i = 0; i < mask.size(); i++) {
-        mask[i] /= mask_elements_sum;
+        mask.push_back(100 * (exp(-(pow(i, 2)) / (2 * pow(sigma, 2)))));
     }
 
     return mask;
@@ -110,9 +106,9 @@ void MainWindow::open_image() {
     if (!file_name.isNull()) {
         original_image.load(file_name);
 
-        int r = 7;
+        int r = 70;
 
-        std::vector<float> mask = generate_gauss_mask(r);
+        std::vector<int> mask = generate_gauss_mask(r);
 
         QImage destination_image = QImage(original_image.width(), original_image.height(), original_image.format());
         destination_image.fill(Qt::white);
