@@ -122,14 +122,41 @@ Widget::~Widget()
 {
 }
 
+bool first_four_points = false;
+int points_counter = 0;
+
 void Widget::mousePressEvent(QMouseEvent *event)
 {
-    ivec2 point = {event->pos().x(), event->pos().y()};
-    control_points.push_back(point);
+    if (!first_four_points) {
+        control_points.push_back({event->pos().x(), event->pos().y()});
+        points_counter++;
 
-    if (control_points.size() == 4) {
-        draw_bezier(control_points, image);
-        update(); // image are changed -> update()
+        if (points_counter == 4) {
+            draw_bezier(control_points, image);
+
+            update();
+
+            first_four_points = true;
+
+            control_points.clear();
+            points_counter = 0;
+
+            control_points.push_back(prev_point);
+        }
+    } else {
+        control_points.push_back({event->pos().x(), event->pos().y()});
+        points_counter++;
+
+        if (points_counter == 3) {
+            draw_bezier(control_points, image);
+
+            update();
+
+            control_points.clear();
+            points_counter = 0;
+
+            control_points.push_back(prev_point);
+        }
     }
 }
 
