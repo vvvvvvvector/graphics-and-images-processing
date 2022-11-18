@@ -11,146 +11,68 @@ void draw_a_line(int start_x, int start_y, int end_x, int end_y, QImage &img) {
     int dx = abs(end_x - start_x);
     int dy = abs(end_y - start_y);
 
+    int x = start_x;
+    int y = start_y;
+
     if (dx > dy) {
-        int x = start_x;
-        int y = start_y;
+        int ix, iy;
+
+        int decision_variable = 2 * dy - dx;
+
+        if (end_x > start_x) {
+            ix = 1;
+        } else {
+            ix = -1;
+        }
 
         if (end_y > start_y) {
-            int decision_variable = 2 * dy - dx;
-
-            // done
-            if (end_x > start_x) {
-                while (x != end_x) {
-                    if (decision_variable > 0) {
-                        decision_variable += 2 * (dy - dx);
-                        x++;
-                        y++;
-                    } else {
-                        decision_variable += 2 * dy;
-                        x++;
-                    }
-
-                    QRgb *pixel_image = (QRgb*) img.scanLine(y);
-                    pixel_image[x] = qRgb(255, 255, 255);
-                }
-            } else {
-                while (x != end_x) {
-                    if (decision_variable > 0) {
-                        decision_variable += 2 * (dy - dx);
-                        x--;
-                        y++;
-                    } else {
-                        decision_variable += 2 * dy;
-                        x--;
-                    }
-
-                    QRgb *pixel_image = (QRgb*) img.scanLine(y);
-                    pixel_image[x] = qRgb(255, 255, 255);
-                }
-            }
+            iy = 1;
         } else {
-            int decision_variable = 2 * dy - dx;
+            iy = -1;
+        }
 
-            if (end_x > start_x) {
-                while (x != end_x) {
-                    if (decision_variable > 0) {
-                        decision_variable += 2 * (dy - dx);
-                        x++;
-                        y--;
-                    } else {
-                        decision_variable += 2 * dy;
-                        x++;
-                    }
-
-                    QRgb *pixel_image = (QRgb*) img.scanLine(y);
-                    pixel_image[x] = qRgb(255, 255, 255);
-                }
+        while (x != end_x) {
+            if (decision_variable > 0) {
+                decision_variable += 2 * (dy - dx);
+                x += ix;
+                y += iy;
             } else {
-                while (x != end_x) {
-                    if (decision_variable > 0) {
-                        decision_variable += 2 * (dy - dx);
-                        x--;
-                        y--;
-                    } else {
-                        decision_variable += 2 * dy;
-                        x--;
-                    }
-
-                    QRgb *pixel_image = (QRgb*) img.scanLine(y);
-                    pixel_image[x] = qRgb(255, 255, 255);
-                }
+                decision_variable += 2 * dy;
+                x += ix;
             }
+
+            QRgb *pixel_image = (QRgb*) img.scanLine(y);
+            pixel_image[x] = qRgb(255, 255, 255);
         }
     } else {
-        int x = start_x;
-        int y = start_y;
+        int ix, iy;
 
-        // done
+        int decision_variable = 2 * dx - dy;
+
         if (end_y > start_y) {
-            int decision_variable = 2 * dx - dy;
-
-            if (end_x > start_x) {
-                while (y != end_y) {
-                    if (decision_variable > 0) {
-                        decision_variable += 2 * (dx - dy);
-                        x++;
-                        y++;
-                    } else {
-                        decision_variable += 2 * dx;
-                        y++;
-                    }
-
-                    QRgb *pixel_image = (QRgb*) img.scanLine(y);
-                    pixel_image[x] = qRgb(255, 255, 255);
-                }
-            } else {
-                while (y != end_y) {
-                    if (decision_variable > 0) {
-                        decision_variable += 2 * (dx - dy);
-                        x--;
-                        y++;
-                    } else {
-                        decision_variable += 2 * dx;
-                        y++;
-                    }
-
-                    QRgb *pixel_image = (QRgb*) img.scanLine(y);
-                    pixel_image[x] = qRgb(255, 255, 255);
-                }
-            }
+            iy = 1;
         } else {
-            int decision_variable = 2 * dx - dy;
+            iy = -1;
+        }
 
-            // done
-            if (end_x > start_x) {
-                while (y != end_y) {
-                    if (decision_variable > 0) {
-                        decision_variable += 2 * (dx - dy);
-                        x++;
-                        y--;
-                    } else {
-                        decision_variable += 2 * dx;
-                        y--;
-                    }
+        if (end_x > start_x) {
+            ix = 1;
+        } else {
+            ix = -1;
+        }
 
-                    QRgb *pixel_image = (QRgb*) img.scanLine(y);
-                    pixel_image[x] = qRgb(255, 255, 255);
-                }
+        while (y != end_y) {
+            if (decision_variable > 0) {
+                decision_variable += 2 * (dx - dy);
+                x += ix;
+                y += iy;
             } else {
-                while (y != end_y) {
-                    if (decision_variable > 0) {
-                        decision_variable += 2 * (dx - dy);
-                        x--;
-                        y--;
-                    } else {
-                        decision_variable += 2 * dx;
-                        y--;
-                    }
-
-                    QRgb *pixel_image = (QRgb*) img.scanLine(y);
-                    pixel_image[x] = qRgb(255, 255, 255);
-                }
+                decision_variable += 2 * dx;
+                y += iy;
             }
+
+            QRgb *pixel_image = (QRgb*) img.scanLine(y);
+            pixel_image[x] = qRgb(255, 255, 255);
         }
     }
 }
