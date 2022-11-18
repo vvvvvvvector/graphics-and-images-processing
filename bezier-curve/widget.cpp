@@ -3,6 +3,80 @@
 #include <QPainter>
 #include <QMouseEvent>
 
+void draw_a_line(int start_x, int start_y, int end_x, int end_y, QImage &img) {
+    int dx = abs(end_x - start_x);
+    int dy = abs(end_y - start_y);
+
+    int x = start_x;
+    int y = start_y;
+
+    if (dx > dy) {
+        int ix, iy;
+
+        int decision_variable = 2 * dy - dx;
+
+        if (end_x > start_x) {
+            ix = 1;
+        } else {
+            ix = -1;
+        }
+
+        if (end_y > start_y) {
+            iy = 1;
+        } else {
+            iy = -1;
+        }
+
+        while (x != end_x) {
+            if (decision_variable > 0) {
+                decision_variable += 2 * (dy - dx);
+                x += ix;
+                y += iy;
+            } else {
+                decision_variable += 2 * dy;
+                x += ix;
+            }
+
+            QRgb *pixel_image = (QRgb*) img.scanLine(y);
+            pixel_image[x] = qRgb(255, 255, 255);
+        }
+    } else {
+        int ix, iy;
+
+        int decision_variable = 2 * dx - dy;
+
+        if (end_y > start_y) {
+            iy = 1;
+        } else {
+            iy = -1;
+        }
+
+        if (end_x > start_x) {
+            ix = 1;
+        } else {
+            ix = -1;
+        }
+
+        while (y != end_y) {
+            if (decision_variable > 0) {
+                decision_variable += 2 * (dx - dy);
+                x += ix;
+                y += iy;
+            } else {
+                decision_variable += 2 * dx;
+                y += iy;
+            }
+
+            QRgb *pixel_image = (QRgb*) img.scanLine(y);
+            pixel_image[x] = qRgb(255, 255, 255);
+        }
+    }
+}
+
+bool flag = false;
+
+ivec2 prev_point;
+
 void draw_bezier(std::vector<ivec2> &control_points, QImage &img) {
     float t = 0.0f;
     float step = 1.0f / 16.0f;
@@ -24,6 +98,16 @@ void draw_bezier(std::vector<ivec2> &control_points, QImage &img) {
 
         QRgb *pixel_img = (QRgb*) img.scanLine(y);
         pixel_img[x] = qRgb(255, 255, 255);
+
+        if (!flag) {
+            prev_point = {x , y};
+
+            flag = true;
+        } else {
+            draw_a_line(prev_point.x, prev_point.y, x, y, img);
+
+            prev_point = {x, y};
+        }
     }
 }
 
