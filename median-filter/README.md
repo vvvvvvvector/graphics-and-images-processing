@@ -1,0 +1,1 @@
+![median-filter-example](../images/median-filter.png)
