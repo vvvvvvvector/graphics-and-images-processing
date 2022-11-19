@@ -2,6 +2,7 @@
 *
 
 # but not
+!*.png
 !*.cpp
 !*.h
 !*.ui
