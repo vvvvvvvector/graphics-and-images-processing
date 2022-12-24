@@ -91,7 +91,7 @@ void apply_separable_gauss_filter(const QImage &src, QImage &dst, std::vector<in
 std::vector<int> generate_gauss_mask(int radius) {
     std::vector<int> mask;
 
-    float sigma = (2 * radius + 1) / 6;
+    float sigma = (2 * radius + 1) / (2 * 3.14159265359);
 
     for (int i = -radius; i <= radius; i++) {
         mask.push_back(100 * (exp(-(pow(i, 2)) / (2 * pow(sigma, 2)))));
@@ -106,7 +106,7 @@ void MainWindow::open_image() {
     if (!file_name.isNull()) {
         original_image.load(file_name);
 
-        int r = 70;
+        int r = 50;
 
         std::vector<int> mask = generate_gauss_mask(r);
 

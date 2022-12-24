@@ -91,7 +91,7 @@ void apply_separable_gauss_filter(const QImage &src, QImage &dst, std::vector<in
 std::vector<int> generate_gauss_mask(int radius) {
     std::vector<int> mask;
 
-    float sigma = (2 * radius + 1) / 6;
+    float sigma = (2 * radius + 1) / (2 * 3.14159265359);
 
     for (int i = -radius; i <= radius; i++) {
         mask.push_back(100 * (exp(-(pow(i, 2)) / (2 * pow(sigma, 2)))));
@@ -100,7 +100,7 @@ std::vector<int> generate_gauss_mask(int radius) {
     return mask;
 }
 
-void images_difference(const QImage &src, QImage &dst, short *r_channel, short *g_channel, short *b_channel,  float alpha) {
+void images_difference(const QImage &src, const QImage &dst, short *r_channel, short *g_channel, short *b_channel,  float alpha) {
     int width = src.width();
 
     for (int y = 0; y < dst.height(); y++) {
@@ -119,14 +119,17 @@ void images_difference(const QImage &src, QImage &dst, short *r_channel, short *
     }
 }
 
-void unsharp_mask(const QImage &src, QImage &dst, short *r_channel, short *g_channel, short *b_channel) {
+QImage unsharp_mask(const QImage &src, short *r_channel, short *g_channel, short *b_channel) {
     int width = src.width();
 
-    for (int y = 0; y < dst.height(); y++) {
-        QRgb *pixel_src = (QRgb*) src.scanLine(y);
-        QRgb *pixel_dst = (QRgb*) dst.scanLine(y);
+    QImage result = QImage(src.width(), src.height(), src.format());
+    result.fill(Qt::white);
 
-        for (int x = 0; x < dst.width(); x++) {
+    for (int y = 0; y < result.height(); y++) {
+        QRgb *pixel_src = (QRgb*) src.scanLine(y);
+        QRgb *pixel_result = (QRgb*) result.scanLine(y);
+
+        for (int x = 0; x < result.width(); x++) {
             int red = qRed(pixel_src[x]) + r_channel[x + y * width];
             int green = qGreen(pixel_src[x]) + g_channel[x + y * width];
             int blue = qBlue(pixel_src[x]) + b_channel[x + y * width];
@@ -135,9 +138,11 @@ void unsharp_mask(const QImage &src, QImage &dst, short *r_channel, short *g_cha
             green = clamp<int>(green, 0, 255);
             blue = clamp<int>(blue, 0, 255);
 
-            pixel_dst[x] = qRgb(red, green, blue);
+            pixel_result[x] = qRgb(red, green, blue);
         }
     }
+
+    return result;
 }
 
 void MainWindow::open_image() {
@@ -146,27 +151,27 @@ void MainWindow::open_image() {
     if (!file_name.isNull()) {
         original_image.load(file_name);
 
-        int r = 15;
+        int r = 3;
 
         std::vector<int> mask = generate_gauss_mask(r);
 
-        QImage destination_image = QImage(original_image.width(), original_image.height(), original_image.format());
-        destination_image.fill(Qt::white);
+        QImage blurred_image = QImage(original_image.width(), original_image.height(), original_image.format());
+        blurred_image.fill(Qt::white);
 
         QImage image_with_borders = make_image_with_borders(original_image, r);
         ui->original_image->setPixmap(QPixmap::fromImage(image_with_borders));
 
-        apply_separable_gauss_filter(image_with_borders, destination_image, mask, r);
+        apply_separable_gauss_filter(image_with_borders, blurred_image, mask, r);
 
         short *r_channel = new short[original_image.width() * original_image.height()];
         short *g_channel = new short[original_image.width() * original_image.height()];
         short *b_channel = new short[original_image.width() * original_image.height()];
 
-        images_difference(original_image, destination_image, r_channel, g_channel, b_channel, 0.5f);
+        images_difference(original_image, blurred_image, r_channel, g_channel, b_channel, 1.0f);
 
-        unsharp_mask(original_image, destination_image, r_channel, g_channel, b_channel);
+        QImage result = unsharp_mask(original_image, r_channel, g_channel, b_channel);
 
-        ui->destination_image->setPixmap(QPixmap::fromImage(destination_image));
+        ui->destination_image->setPixmap(QPixmap::fromImage(result));
 
         delete[] r_channel;
         delete[] g_channel;
