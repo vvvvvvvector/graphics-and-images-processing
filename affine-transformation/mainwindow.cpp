@@ -42,10 +42,10 @@ MainWindow::MainWindow(QWidget *parent)
         // float *matrix = multiply_transformations(reflection_y_matrix, translation_matrix);
 
         // 4. Translation
-        float *matrix = translation(original_image.width() / 2, 0);
+        // float *matrix = translation(original_image.width() / 2, 0);
 
         // 5. Scale
-        // float *matrix = scale(1.5f, 1.5f);
+        float *matrix = scale(1.5f, 1.0f);
 
         // 6. Rotate
         // float *matrix = rotate(M_PI / 6);
@@ -154,6 +154,13 @@ QImage apply_affine_transformation(const QImage &src, float *matrix3x3) {
     int width = src.width();
     int height = src.height();
 
+    float zero = matrix3x3[0];
+    float one = matrix3x3[1];
+    float two = matrix3x3[2];
+    float three = matrix3x3[3];
+    float four = matrix3x3[4];
+    float five = matrix3x3[5];
+
     QImage dst = QImage(width, height, src.format());
     dst.fill(Qt::black);
 
@@ -162,8 +169,8 @@ QImage apply_affine_transformation(const QImage &src, float *matrix3x3) {
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            int out_x = x * matrix3x3[0] + y * matrix3x3[1] + matrix3x3[2];
-            int out_y = x * matrix3x3[3] + y * matrix3x3[4] + matrix3x3[5];
+            int out_x = x * zero + y * one + two;
+            int out_y = x * three + y * four + five;
 
             if ((out_x < width && out_x >= 0) && (out_y < height && out_y >= 0))
                 pixel_dst[x + y * width] = pixel_src[out_x + out_y * width];
