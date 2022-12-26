@@ -3,13 +3,60 @@
 
 #include <QFileDialog>
 
+float* multiply_transformations(float *, float *);
+
+float* identity();
+float* reflection_x();
+float* reflection_y();
+float* translation(float, float);
+float* scale(float, float);
+float* rotate(float);
+float* shear(float, float);
+
+QImage apply_affine_transformation(const QImage &, float *);
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    ui->image->setText("Your image here.");
+    // ui->image->setText("Your image here.");
+
+    QString file_name = "/Users/vvvvvec1or/Downloads/Lenna.png";
+
+    if (!file_name.isNull()) {
+        original_image.load(file_name);
+
+        // 1. Identity
+        // float* matrix = identity();
+
+        // 2. Reflection x
+        // float* reflection_x_matrix = reflection_x();
+        // float *translation_matrix = translation(original_image.width() - 1, 0);
+        // float *matrix = multiply_transformations(reflection_x_matrix, translation_matrix);
+
+        // 3. Reflection y
+        // float* reflection_y_matrix = reflection_y();
+        // float *translation_matrix = translation(0, original_image.height() - 1);
+        // float *matrix = multiply_transformations(reflection_y_matrix, translation_matrix);
+
+        // 4. Translation
+        float *matrix = translation(original_image.width() / 2, 0);
+
+        // 5. Scale
+        // float *matrix = scale(1.5f, 1.5f);
+
+        // 6. Rotate
+        // float *matrix = rotate(M_PI / 6);
+
+        // 7. Shear
+        // float *matrix = shear(0.5f, 0.0f);
+
+        QImage process_image = apply_affine_transformation(original_image, matrix);
+
+        ui->image->setPixmap(QPixmap::fromImage(process_image));
+    }
 }
 
 MainWindow::~MainWindow()
@@ -76,8 +123,8 @@ float* translation(float tx, float ty) {
 float* scale(float sx, float sy) {
     static float matrix3x3[9] = {0.0f};
 
-    matrix3x3[0] = sx; matrix3x3[1] = 0.0f; matrix3x3[2] = 0.0f;
-    matrix3x3[3] = 0.0f; matrix3x3[4] = sy; matrix3x3[5] = 0.0f;
+    matrix3x3[0] = 1 / sx; matrix3x3[1] = 0.0f; matrix3x3[2] = 0.0f;
+    matrix3x3[3] = 0.0f; matrix3x3[4] = 1 / sy; matrix3x3[5] = 0.0f;
     matrix3x3[6] = 0.0f; matrix3x3[7] = 0.0f; matrix3x3[8] = 1.0f;
 
     return matrix3x3;
@@ -103,11 +150,11 @@ float* shear(float sx, float sy) {
     return matrix3x3;
 }
 
-void apply_affine_transformation(const QImage &src, QImage &dst, float *matrix3x3) {
+QImage apply_affine_transformation(const QImage &src, float *matrix3x3) {
     int width = src.width();
     int height = src.height();
 
-    dst = QImage(width, height, src.format());
+    QImage dst = QImage(width, height, src.format());
     dst.fill(Qt::black);
 
     QRgb *pixel_src = (QRgb*) src.scanLine(0);
@@ -122,6 +169,8 @@ void apply_affine_transformation(const QImage &src, QImage &dst, float *matrix3x
                 pixel_dst[x + y * width] = pixel_src[out_x + out_y * width];
         }
     }
+
+    return dst;
 }
 
 void MainWindow::open_image() {
@@ -130,34 +179,32 @@ void MainWindow::open_image() {
     if (!file_name.isNull()) {
         original_image.load(file_name);
 
-        QImage process_image;
-
         // 1. Identity
-        // float* identity_matrix = identity();
+        // float* matrix = identity();
 
         // 2. Reflection x
         // float* reflection_x_matrix = reflection_x();
         // float *translation_matrix = translation(original_image.width() - 1, 0);
-        // float *product = multiply_transformations(reflection_x_matrix, translation_matrix);
+        // float *matrix = multiply_transformations(reflection_x_matrix, translation_matrix);
 
         // 3. Reflection y
         // float* reflection_y_matrix = reflection_y();
         // float *translation_matrix = translation(0, original_image.height() - 1);
-        // float *product = multiply_transformations(reflection_y_matrix, translation_matrix);
+        // float *matrix = multiply_transformations(reflection_y_matrix, translation_matrix);
 
         // 4. Translation
-        float *translation_matrix = translation(original_image.width() / 2, 0);
+        // float *matrix = translation(original_image.width() / 2, 0);
 
         // 5. Scale
-        // float *scale_matrix = scale(2.0f, 1.0f);
+        float *matrix = scale(1.5f, 1.5f);
 
         // 6. Rotate
-        // float *rotate_matrix = rotate(M_PI / 10);
+        // float *matrix = rotate(M_PI / 6);
 
         // 7. Shear
-        // float *shear_matrix = shear(0.5f, 0.0f);
+        // float *matrix = shear(0.5f, 0.0f);
 
-        apply_affine_transformation(original_image, process_image, translation_matrix);
+        QImage process_image = apply_affine_transformation(original_image, matrix);
 
         ui->image->setPixmap(QPixmap::fromImage(process_image));
     }
