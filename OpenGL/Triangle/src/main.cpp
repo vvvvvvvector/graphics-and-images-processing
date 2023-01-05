@@ -132,23 +132,40 @@ int main(void)
         0.5f, 0.0f,
         0.0f, 0.5f};
 
-    GLuint vbo, vao; // id for my buffer
+    float colors[] = {
+        1.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f, 1.0f};
 
+    GLuint vbo, vbc; // id for my buffers
+
+    GLuint vao;
+
+    // -------------geometry def.-------------
     glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo); // generating id for my buffer
 
     glBindVertexArray(vao);
 
+    // -------------vbo-------------
+    glGenBuffers(1, &vbo);              // generating id for my buffer
     glBindBuffer(GL_ARRAY_BUFFER, vbo); // selecting my buffer; work on this buffer
-
     glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
-
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0); // configure attribute
     glEnableVertexAttribArray(0);                                                  // fire this attribute(position, texture, ...)
+    glBindBuffer(GL_ARRAY_BUFFER, 0);                                              // unselect my buffer
+    // -------------vbo-------------
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0); // unselect my buffer
+    // -------------vbc-------------
+    glGenBuffers(1, &vbc);
+    glBindBuffer(GL_ARRAY_BUFFER, vbc);
+    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), colors, GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // -------------vbc-------------
 
     glBindVertexArray(0);
+    // -------------geometry def.-------------
 
     ShadersSource shaders = parse_shaders("res/shaders/basic.shader");
 

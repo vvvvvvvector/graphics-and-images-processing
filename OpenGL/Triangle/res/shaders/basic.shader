@@ -1,19 +1,24 @@
 #shader vertex
 #version 330 core
 
-layout (location = 0) in vec4 trianglePos;
+layout (location = 0) in vec4 vertices_position;
+layout (location = 1) in vec4 colors_array;
+
+out vec4 vertex_color;
                                   
 void main()
 {
-    gl_Position = trianglePos;
+    gl_Position = vertices_position;
+    vertex_color = colors_array;
 }
 
 #shader fragment
 #version 330 core
-                                    
-out vec4 fragColor;
+
+in vec4 vertex_color;              
+out vec4 pixel_color;
                                     
 void main()
 {
-     fragColor = vec4(0.2, 0.3, 0.8, 1.0);
+    pixel_color = vertex_color;
 }
