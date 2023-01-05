@@ -95,6 +95,10 @@ static GLuint create_shader(const std::string &vertex_shader, const std::string 
     return program;
 }
 
+void init()
+{
+}
+
 int main(void)
 {
     if (!glfwInit())
@@ -130,14 +134,18 @@ int main(void)
     float positions[] = {
         0.0f, 0.0f,
         0.5f, 0.0f,
-        0.0f, 0.5f};
+        0.0f, 0.5f,
+        0.5f, 0.5f};
 
     float colors[] = {
         1.0f, 0.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f, 1.0f};
+        0.0f, 0.0f, 1.0f, 1.0f,
+        0.2f, 0.5f, 1.0f, 1.0f};
 
-    GLuint vbo, vbc; // id for my buffers
+    GLuint indices[] = {0, 1, 2, 3, 2, 1};
+
+    GLuint vbo, cbo, ibo; // id for my buffers
 
     GLuint vao;
 
@@ -149,20 +157,26 @@ int main(void)
     // -------------vbo-------------
     glGenBuffers(1, &vbo);              // generating id for my buffer
     glBindBuffer(GL_ARRAY_BUFFER, vbo); // selecting my buffer; work on this buffer
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0); // configure attribute
     glEnableVertexAttribArray(0);                                                  // fire this attribute(position, texture, ...)
     glBindBuffer(GL_ARRAY_BUFFER, 0);                                              // unselect my buffer
     // -------------vbo-------------
 
-    // -------------vbc-------------
-    glGenBuffers(1, &vbc);
-    glBindBuffer(GL_ARRAY_BUFFER, vbc);
-    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), colors, GL_STATIC_DRAW);
+    // -------------ibo-------------
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+    // -------------ibo-------------
+
+    // -------------cbo-------------
+    glGenBuffers(1, &cbo);
+    glBindBuffer(GL_ARRAY_BUFFER, cbo);
+    glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float), colors, GL_STATIC_DRAW);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    // -------------vbc-------------
+    // -------------cbo-------------
 
     glBindVertexArray(0);
     // -------------geometry def.-------------
@@ -179,9 +193,9 @@ int main(void)
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindVertexArray(vao);           // its like glBegin?
-        glDrawArrays(GL_TRIANGLES, 0, 3); // draw call -> should draw a triangle
-        glBindVertexArray(0);             // its like glEnd?
+        glBindVertexArray(vao);                                      // its like glBegin?
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0); // draw call -> should draw a triangle
+        glBindVertexArray(0);                                        // its like glEnd?
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
