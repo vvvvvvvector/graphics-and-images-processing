@@ -103,7 +103,7 @@ int main(void)
 {
     if (!glfwInit())
     {
-        std::cout << "glfw init error.\n";
+        std::cout << "GLFW init error.\n";
         return -1;
     }
 
@@ -115,7 +115,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    GLFWwindow *window = glfwCreateWindow(window_width, window_height, "Triangle", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(window_width, window_height, "OpenGL Hello World", NULL, NULL);
     if (!window)
     {
         std::cout << "Create window error.\n";
@@ -155,10 +155,10 @@ int main(void)
     glBindVertexArray(vao);
 
     // -------------vbo-------------
-    glGenBuffers(1, &vbo);              // generating id for my buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vbo); // selecting my buffer; work on this buffer
-    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0); // configure attribute
+    glGenBuffers(1, &vbo);                                                         // generating id for my buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);                                            // selecting my buffer; work on this buffer
+    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);   // this buffer contains vertex positions
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0); // specifying layout of data here (each vertex is 2 floats, which in this array, are at a distance of 2 * sizeof(float) from each other)
     glEnableVertexAttribArray(0);                                                  // fire this attribute(position, texture, ...)
     glBindBuffer(GL_ARRAY_BUFFER, 0);                                              // unselect my buffer
     // -------------vbo-------------
