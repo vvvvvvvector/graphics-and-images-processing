@@ -2,27 +2,54 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 const unsigned int window_width = 500;
 const unsigned int window_height = 500;
 
-const std::string vertex_shader = "#version 330 core\n"
-                                  "\n"
-                                  "layout (location = 0) in vec4 trianglePos;\n"
-                                  "\n"
-                                  "void main()\n"
-                                  "{\n"
-                                  "     gl_Position = trianglePos;\n"
-                                  "}\n";
+struct ShadersSource
+{
+    std::string vertex;
+    std::string fragment;
+};
 
-const std::string fragment_shader = "#version 330 core\n"
-                                    "\n"
-                                    "out vec4 fragColor;\n"
-                                    "\n"
-                                    "void main()\n"
-                                    "{\n"
-                                    "     fragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
-                                    "}\n";
+static ShadersSource parse_shaders(const std::string &filepath)
+{
+    std::ifstream stream(filepath);
+
+    enum class ShaderType
+    {
+        NONE = -1,
+        VERTEX = 0,
+        FRAGMENT = 1
+    };
+
+    std::string line;
+    std::stringstream ss[2];
+    ShaderType type = ShaderType::NONE;
+
+    while (getline(stream, line))
+    {
+        if (line.find("#shader") != std::string::npos)
+        {
+            if (line.find("vertex") != std::string::npos)
+            {
+                type = ShaderType::VERTEX;
+            }
+            else if (line.find("fragment") != std::string::npos)
+            {
+                type = ShaderType::FRAGMENT;
+            }
+        }
+        else
+        {
+            ss[(int)type] << line << '\n';
+        }
+    }
+
+    return {ss[0].str(), ss[1].str()};
+}
 
 static GLuint compile_shader(GLuint type, const std::string &source)
 {
@@ -107,8 +134,8 @@ int main(void)
 
     GLuint vbo, vao; // id for my buffer
 
-    glGenBuffers(1, &vbo); // generating id for my buffer
     glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo); // generating id for my buffer
 
     glBindVertexArray(vao);
 
@@ -123,19 +150,21 @@ int main(void)
 
     glBindVertexArray(0);
 
-    GLuint shader = create_shader(vertex_shader, fragment_shader);
+    ShadersSource shaders = parse_shaders("res/shaders/basic.shader");
+
+    GLuint shader = create_shader(shaders.vertex, shaders.fragment);
     glUseProgram(shader);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClearColor(0, 0, 0, 1.0);
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindVertexArray(vao);
+        glBindVertexArray(vao);           // its like glBegin?
         glDrawArrays(GL_TRIANGLES, 0, 3); // draw call -> should draw a triangle
-        glBindVertexArray(0);
+        glBindVertexArray(0);             // its like glEnd?
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -144,6 +173,8 @@ int main(void)
         glfwPollEvents();
     }
 
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
     glDeleteProgram(shader);
 
     glfwTerminate();
