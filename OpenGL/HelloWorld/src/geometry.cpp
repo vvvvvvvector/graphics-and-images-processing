@@ -15,12 +15,12 @@ void Geometry::render()
     if (n_indices)
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glDrawElements(mode, n_indices, GL_UNSIGNED_INT, (void *)0);
+        glDrawElements(mode, n_indices, GL_UNSIGNED_INT, (void *)0); // draw call
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     else
     {
-        glDrawArrays(mode, 1, n_vertices);
+        glDrawArrays(mode, 0, n_vertices); // draw call
     }
 
     glBindVertexArray(0);

@@ -1,6 +1,8 @@
 #ifndef MATHGL_H
 #define MATHGL_H
 
+#include <math.h>
+
 struct vec2
 {
     float x, y;

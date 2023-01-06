@@ -1,8 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <iostream>
-
 #include "glslprogram.h"
 #include "mathgl.h"
 #include "primitives.h"
@@ -21,10 +19,7 @@ int main(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
 
     GLFWwindow *window = glfwCreateWindow(window_width, window_height, "OpenGL Hello World", NULL, NULL);
     if (!window)
@@ -42,9 +37,9 @@ int main(void)
         return -1;
     }
 
-    // Geometry *geometry = createAxes();
-    // Geometry *geometry = createTriangle();
-    Geometry *geometry = createSquare();
+    Geometry *axes = createAxes();
+    // Geometry *triangle = createTriangle();
+    // Geometry *square = createSquare();
 
     GLSLProgram *base = new GLSLProgram();
     base->compile_shaders_from_file("res/shaders/base.shader");
@@ -55,10 +50,11 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        geometry->render();
+        axes->render();
+        // square->render();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -66,8 +62,6 @@ int main(void)
         /* Poll for and process events */
         glfwPollEvents();
     }
-
-    base->delete_program();
 
     glfwTerminate();
 

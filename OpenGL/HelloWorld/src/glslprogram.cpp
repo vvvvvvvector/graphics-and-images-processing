@@ -90,15 +90,9 @@ void GLSLProgram::compile_shaders_from_file(const std::string &filepath)
 void GLSLProgram::link()
 {
     glLinkProgram(program);
-    glValidateProgram(program);
 }
 
 void GLSLProgram::use()
 {
     glUseProgram(program);
-}
-
-void GLSLProgram::delete_program()
-{
-    glDeleteProgram(program);
 }

@@ -2,28 +2,28 @@
 
 Geometry *createAxes()
 {
+    Geometry *geometry = new Geometry();
+
     vec2 positions[] = {
         {0.0f, 0.0f},
         {0.5f, 0.0f},
+        {0.0f, 0.0f},
         {0.0f, 0.5f},
+        {0.0f, 0.0f},
         {-0.30f, -0.30f}};
 
     vec4 colors[] = {
         {1.0f, 0.0f, 0.0f, 1.0f},
+        {1.0f, 0.0f, 0.0f, 1.0f},
+        {0.0f, 1.0f, 0.0f, 1.0f},
         {0.0f, 1.0f, 0.0f, 1.0f},
         {0.0f, 0.0f, 1.0f, 1.0f},
-        {0.2f, 0.5f, 1.0f, 1.0f}};
-
-    Geometry *geometry = new Geometry();
+        {0.0f, 0.0f, 1.0f, 1.0f}};
 
     geometry->mode = GL_LINES;
 
-    const int size = 6;
-    GLuint indices[size] = {0, 1, 0, 2, 0, 3};
-    geometry->set_indices(indices, size);
-
-    geometry->set_vertices(0, positions, 4);
-    geometry->set_attribute(1, colors, 5);
+    geometry->set_vertices(0, positions, 6);
+    geometry->set_attribute(1, colors, 6);
 
     return geometry;
 }

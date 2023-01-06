@@ -21,7 +21,6 @@ public:
 
     void link();
     void use();
-    void delete_program();
 };
 
 #endif // GLSLPROGRAM_H
