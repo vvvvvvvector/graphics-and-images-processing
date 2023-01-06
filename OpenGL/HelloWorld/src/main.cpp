@@ -90,12 +90,12 @@ int main(void)
     glBindVertexArray(0);
     // -------------geometry def.-------------
 
-    GLSLProgram *shader = new GLSLProgram();
+    GLSLProgram *basic = new GLSLProgram();
 
-    shader->compile_shaders_from_file("res/shaders/basic.shader");
-    shader->link();
+    basic->compile_shaders_from_file("res/shaders/basic.shader");
+    basic->link();
 
-    shader->use();
+    basic->use();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -117,7 +117,7 @@ int main(void)
 
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &vbo);
-    shader->delete_program();
+    basic->delete_program();
 
     glfwTerminate();
 
