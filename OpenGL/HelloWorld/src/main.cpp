@@ -4,8 +4,8 @@
 #include <iostream>
 
 #include "glslprogram.h"
-#include "geometry.h"
 #include "mathgl.h"
+#include "primitives.h"
 
 const unsigned int window_width = 500;
 const unsigned int window_height = 500;
@@ -42,34 +42,14 @@ int main(void)
         return -1;
     }
 
-    // -------------geometry def.-------------
-    vec2 positions[] = {
-        {0.0f, 0.0f},
-        {0.5f, 0.0f},
-        {0.0f, 0.5f},
-        {0.5f, 0.5f}};
+    // Geometry *geometry = createAxes();
+    // Geometry *geometry = createTriangle();
+    Geometry *geometry = createSquare();
 
-    vec4 colors[] = {
-        {1.0f, 0.0f, 0.0f, 1.0f},
-        {0.0f, 1.0f, 0.0f, 1.0f},
-        {0.0f, 0.0f, 1.0f, 1.0f},
-        {0.2f, 0.5f, 1.0f, 1.0f}};
-
-    GLuint indices[] = {0, 1, 2, 3, 2, 1};
-
-    Geometry *figure = new Geometry();
-
-    figure->set_indices(indices, 6);
-    figure->set_vertices(0, positions, 4);
-    figure->set_vertices(1, colors, 4);
-    // -------------geometry def.-------------
-
-    GLSLProgram *basic = new GLSLProgram();
-
-    basic->compile_shaders_from_file("res/shaders/basic.shader");
-    basic->link();
-
-    basic->use();
+    GLSLProgram *base = new GLSLProgram();
+    base->compile_shaders_from_file("res/shaders/base.shader");
+    base->link();
+    base->use();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -78,7 +58,7 @@ int main(void)
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        figure->render();
+        geometry->render();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -87,7 +67,7 @@ int main(void)
         glfwPollEvents();
     }
 
-    basic->delete_program();
+    base->delete_program();
 
     glfwTerminate();
 

@@ -3,3 +3,4 @@ output
 
 !*.cpp
 !*.shader
+!*.jpg

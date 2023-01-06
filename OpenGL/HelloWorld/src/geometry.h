@@ -3,10 +3,10 @@
 
 #include <glad/glad.h>
 
-#include "mathgl.h"
-
 #include <iostream>
 #include <map>
+
+#include "mathgl.h"
 
 class Geometry
 {
@@ -20,11 +20,9 @@ private:
 
     std::map<unsigned int, GLuint> attributesBuffer;
 
-    void set_attribute(unsigned int attributeIndex, vec2 *data, int n);
-
-    void set_attribute(unsigned int attributeIndex, vec4 *data, int n);
-
 public:
+    GLenum mode;
+
     Geometry();
 
     void render();
@@ -33,7 +31,9 @@ public:
 
     void set_vertices(unsigned int attributeIndex, vec2 *vertices, int n);
 
-    void set_vertices(unsigned int attributeIndex, vec4 *vertices, int n);
+    void set_attribute(unsigned int attributeIndex, vec2 *data, int n);
+    void set_attribute(unsigned int attributeIndex, vec3 *data, int n);
+    void set_attribute(unsigned int attributeIndex, vec4 *data, int n);
 };
 
 #endif // GEOMETRY_H
