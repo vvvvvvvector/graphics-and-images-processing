@@ -4,6 +4,8 @@
 #include <iostream>
 
 #include "glslprogram.h"
+#include "geometry.h"
+#include "mathgl.h"
 
 const unsigned int window_width = 500;
 const unsigned int window_height = 500;
@@ -40,54 +42,26 @@ int main(void)
         return -1;
     }
 
-    float positions[] = {
-        0.0f, 0.0f,
-        0.5f, 0.0f,
-        0.0f, 0.5f,
-        0.5f, 0.5f};
+    // -------------geometry def.-------------
+    vec2 positions[] = {
+        {0.0f, 0.0f},
+        {0.5f, 0.0f},
+        {0.0f, 0.5f},
+        {0.5f, 0.5f}};
 
-    float colors[] = {
-        1.0f, 0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f, 1.0f,
-        0.2f, 0.5f, 1.0f, 1.0f};
+    vec4 colors[] = {
+        {1.0f, 0.0f, 0.0f, 1.0f},
+        {0.0f, 1.0f, 0.0f, 1.0f},
+        {0.0f, 0.0f, 1.0f, 1.0f},
+        {0.2f, 0.5f, 1.0f, 1.0f}};
 
     GLuint indices[] = {0, 1, 2, 3, 2, 1};
 
-    GLuint vbo, cbo, ibo; // id for my buffers
+    Geometry *figure = new Geometry();
 
-    GLuint vao;
-
-    // -------------geometry def.-------------
-    glGenVertexArrays(1, &vao);
-
-    glBindVertexArray(vao);
-
-    // -------------vbo-------------
-    glGenBuffers(1, &vbo);                                                         // generating id for my buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);                                            // selecting my buffer; work on this buffer
-    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);   // this buffer contains vertex positions
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0); // specifying layout of data here (each vertex is 2 floats, which in this array, are at a distance of 2 * sizeof(float) from each other)
-    glEnableVertexAttribArray(0);                                                  // fire this attribute(position, texture, ...)
-    glBindBuffer(GL_ARRAY_BUFFER, 0);                                              // unselect my buffer
-    // -------------vbo-------------
-
-    // -------------ibo-------------
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indices, GL_STATIC_DRAW);
-    // -------------ibo-------------
-
-    // -------------cbo-------------
-    glGenBuffers(1, &cbo);
-    glBindBuffer(GL_ARRAY_BUFFER, cbo);
-    glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float), colors, GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    // -------------cbo-------------
-
-    glBindVertexArray(0);
+    figure->set_indices(indices, 6);
+    figure->set_vertices(0, positions, 4);
+    figure->set_vertices(1, colors, 4);
     // -------------geometry def.-------------
 
     GLSLProgram *basic = new GLSLProgram();
@@ -104,9 +78,7 @@ int main(void)
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindVertexArray(vao);                                      // its like glBegin?
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0); // draw call -> should draw a triangle
-        glBindVertexArray(0);                                        // its like glEnd?
+        figure->render();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -115,8 +87,6 @@ int main(void)
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(1, &vao);
-    glDeleteBuffers(1, &vbo);
     basic->delete_program();
 
     glfwTerminate();

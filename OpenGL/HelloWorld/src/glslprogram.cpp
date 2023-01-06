@@ -1,8 +1,4 @@
-#include <glad/glad.h>
 #include "glslprogram.h"
-
-#include <fstream>
-#include <sstream>
 
 GLSLProgram::GLSLProgram()
 {
