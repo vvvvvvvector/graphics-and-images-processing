@@ -3,6 +3,7 @@
 
 #include "glslprogram.h"
 #include "primitives.h"
+#include "texture2d.h"
 #include "mathgl.h"
 
 const unsigned int window_width = 500;
@@ -41,10 +42,29 @@ int main(void)
     // Geometry *triangle = createTriangle();
     Geometry *square = createSquare();
 
-    GLSLProgram *base = new GLSLProgram();
-    base->compile_shaders_from_file("res/shaders/base.shader");
-    base->link();
-    base->use();
+    vec2 texture_coordinates[] = {
+        {0.0f, 0.0f},
+        {0.0f, 1.0f},
+        {1.0f, 0.0f},
+        {1.0f, 1.0f}};
+
+    square->set_attribute(7, texture_coordinates, 4);
+
+    int grass_tex_unit = 4;
+    Texture2D *texture = new Texture2D();
+    texture->load_texture_from_file("res/textures/metal.jpg");
+    texture->bind(grass_tex_unit);
+
+    GLSLProgram *texture_shader = new GLSLProgram();
+    texture_shader->set_uniform("SamplerTex", grass_tex_unit);
+    texture_shader->compile_shaders_from_file("res/shaders/texture.shader");
+    texture_shader->link();
+    texture_shader->use();
+
+    // GLSLProgram *base = new GLSLProgram();
+    // base->compile_shaders_from_file("res/shaders/base.shader");
+    // base->link();
+    // base->use();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

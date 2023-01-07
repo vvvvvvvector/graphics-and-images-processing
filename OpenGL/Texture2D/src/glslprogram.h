@@ -21,6 +21,8 @@ public:
 
     void link();
     void use();
+
+    void set_uniform(const char *name, int value);
 };
 
 #endif // GLSLPROGRAM_H
