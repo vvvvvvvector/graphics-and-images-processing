@@ -1,6 +1,6 @@
 #include "primitives.h"
 
-Geometry *createAxes()
+Geometry *create_main_axes()
 {
     Geometry *geometry = new Geometry();
 
@@ -28,7 +28,7 @@ Geometry *createAxes()
     return geometry;
 }
 
-Geometry *createTriangle()
+Geometry *create_triangle()
 {
     vec2 positions[] = {
         {0.0f, 0.0f},
@@ -56,13 +56,13 @@ Geometry *createTriangle()
     return geometry;
 }
 
-Geometry *createSquare()
+Geometry *create_square()
 {
     vec2 positions[] = {
         {0.0f, 0.0f},
-        {0.5f, 0.0f},
-        {0.0f, 0.5f},
-        {0.5f, 0.5f}};
+        {0.8f, 0.0f},
+        {0.0f, 0.8f},
+        {0.8f, 0.8f}};
 
     vec4 colors[] = {
         {1.0f, 0.0f, 0.0f, 1.0f},

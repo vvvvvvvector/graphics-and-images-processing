@@ -5,6 +5,11 @@ GLSLProgram::GLSLProgram()
     program = glCreateProgram();
 }
 
+GLSLProgram::~GLSLProgram()
+{
+    glDeleteProgram(program);
+}
+
 struct ShaderStrings
 {
     std::string vertex;

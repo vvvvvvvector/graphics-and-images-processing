@@ -3,10 +3,10 @@
 
 #include "geometry.h"
 
-Geometry *createAxes();
+Geometry *create_main_axes();
 
-Geometry *createTriangle();
+Geometry *create_triangle();
 
-Geometry *createSquare();
+Geometry *create_square();
 
 #endif // PRIMITIVES_H

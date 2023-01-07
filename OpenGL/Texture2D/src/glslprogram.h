@@ -16,6 +16,7 @@ private:
 
 public:
     GLSLProgram();
+    ~GLSLProgram();
 
     void compile_shaders_from_file(const std::string &filepath);
 
