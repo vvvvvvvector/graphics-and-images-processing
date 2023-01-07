@@ -36,14 +36,14 @@ int main(void)
     square->set_attribute(7, texture_coordinates, 4);
 
     GLSLProgram *shader = new GLSLProgram();
-    shader->compile_shaders_from_file("res/shaders/mix_textures.shader");
+    shader->compile_shaders_from_file("res/shaders/base_and_texture.shader");
     shader->link();
     shader->use();
 
-    unsigned int wood_tex_slot = 10;
-    Texture2D *wood = new Texture2D("res/textures/wood.jpg", wood_tex_slot);
-    wood->bind(wood_tex_slot);
-    shader->set_uniform("texture_1", wood_tex_slot);
+    // unsigned int wood_tex_slot = 10;
+    // Texture2D *wood = new Texture2D("res/textures/wood.jpg", wood_tex_slot);
+    // wood->bind(wood_tex_slot);
+    // shader->set_uniform("texture_1", wood_tex_slot);
 
     unsigned int metal_tex_slot = 15;
     Texture2D *metal = new Texture2D("res/textures/metal.jpg", metal_tex_slot);
