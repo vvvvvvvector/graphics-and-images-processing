@@ -59,10 +59,10 @@ Geometry *create_triangle()
 Geometry *create_square()
 {
     vec2 positions[] = {
-        {0.0f, 0.0f},
-        {0.8f, 0.0f},
-        {0.0f, 0.8f},
-        {0.8f, 0.8f}};
+        {-0.7f, -0.7f},
+        {-0.7f, 0.7f},
+        {0.7f, 0.7f},
+        {0.7f, -0.7f}};
 
     vec4 colors[] = {
         {1.0f, 0.0f, 0.0f, 1.0f},
@@ -75,7 +75,7 @@ Geometry *create_square()
     geometry->mode = GL_TRIANGLES;
 
     const int size = 6;
-    GLuint indices[size] = {0, 1, 2, 2, 3, 1};
+    GLuint indices[size] = {0, 1, 3, 2, 1, 3};
     geometry->set_indices(indices, size);
 
     geometry->set_vertices(0, positions, 4);

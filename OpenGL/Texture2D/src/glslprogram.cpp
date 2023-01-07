@@ -104,7 +104,5 @@ void GLSLProgram::use()
 
 void GLSLProgram::set_uniform(const char *name, int value)
 {
-    GLint loc = glGetUniformLocation(program, name);
-    if (loc != -1)
-        glUniform1i(loc, value);
+    glUniform1i(glGetUniformLocation(program, name), value);
 }

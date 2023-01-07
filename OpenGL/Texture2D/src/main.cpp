@@ -15,7 +15,7 @@ const unsigned int window_height = 500;
 
 int main(void)
 {
-    //----------------init things----------------
+    //----------------init----------------
     init_glfw();
 
     GLFWwindow *window = glfw_create_window(window_width, window_height, "Textures2D");
@@ -23,33 +23,32 @@ int main(void)
     glfwMakeContextCurrent(window);
 
     init_glad();
-    //----------------init things----------------
+    //----------------init----------------
 
     Geometry *square = create_square();
 
     vec2 texture_coordinates[] = {
         {0.0f, 0.0f},
-        {1.0f, 0.0f},
         {0.0f, 1.0f},
-        {1.0f, 1.0f}};
+        {1.0f, 1.0f},
+        {1.0f, 0.0f}};
 
     square->set_attribute(7, texture_coordinates, 4);
 
-    int wood_tex_unit = 4;
-    Texture2D *texture = new Texture2D();
-    texture->load_texture_from_file("res/textures/wood.jpg");
-    texture->bind(wood_tex_unit);
+    GLSLProgram *shader = new GLSLProgram();
+    shader->compile_shaders_from_file("res/shaders/mix_textures.shader");
+    shader->link();
+    shader->use();
 
-    GLSLProgram *texture_shader = new GLSLProgram();
-    texture_shader->set_uniform("texture_1", wood_tex_unit);
-    texture_shader->compile_shaders_from_file("res/shaders/texture.shader");
-    texture_shader->link();
-    texture_shader->use();
+    unsigned int wood_tex_slot = 10;
+    Texture2D *wood = new Texture2D("res/textures/wood.jpg", wood_tex_slot);
+    wood->bind(wood_tex_slot);
+    shader->set_uniform("texture_1", wood_tex_slot);
 
-    GLSLProgram *base = new GLSLProgram();
-    base->compile_shaders_from_file("res/shaders/base.shader");
-    base->link();
-    // base->use();
+    unsigned int metal_tex_slot = 15;
+    Texture2D *metal = new Texture2D("res/textures/metal.jpg", metal_tex_slot);
+    metal->bind(metal_tex_slot);
+    shader->set_uniform("texture_2", metal_tex_slot);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))

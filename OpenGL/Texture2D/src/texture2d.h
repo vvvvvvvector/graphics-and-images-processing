@@ -16,13 +16,11 @@ private:
     int width, height, bits_per_pixel;
 
 public:
-    Texture2D();
+    Texture2D(const char *filepath, unsigned char slot);
     ~Texture2D();
 
-    void bind(int texture_unit);
+    void bind(unsigned int slot);
     void unbind();
-
-    void load_texture_from_file(const std::string &filepath);
 };
 
 #endif // TEXTURE2D_H
