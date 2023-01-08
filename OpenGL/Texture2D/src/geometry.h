@@ -30,6 +30,7 @@ public:
     void set_indices(GLuint *data, int n);
 
     void set_vertices(unsigned int attributeIndex, vec2 *vertices, int n);
+    void set_vertices(unsigned int attributeIndex, vec3 *vertices, int n);
 
     void set_attribute(unsigned int attributeIndex, vec2 *data, int n);
     void set_attribute(unsigned int attributeIndex, vec3 *data, int n);

@@ -5,7 +5,7 @@ layout (location = 0) in vec4 vertices_position;
 layout (location = 1) in vec4 colors_array;
 
 out vec4 vertex_color;
-                                  
+
 void main()
 {
     gl_Position = vertices_position;

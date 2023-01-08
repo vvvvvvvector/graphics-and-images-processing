@@ -5,6 +5,8 @@
 
 Geometry *create_main_axes();
 
+Geometry *create_pyramid();
+
 Geometry *create_triangle();
 
 Geometry *create_square();

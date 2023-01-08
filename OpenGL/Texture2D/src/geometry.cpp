@@ -108,3 +108,9 @@ void Geometry::set_vertices(unsigned int attributeIndex, vec2 *vertices, int n)
     n_vertices = n;
     set_attribute(attributeIndex, vertices, n);
 }
+
+void Geometry::set_vertices(unsigned int attributeIndex, vec3 *vertices, int n)
+{
+    n_vertices = n;
+    set_attribute(attributeIndex, vertices, n);
+}
