@@ -23,7 +23,8 @@ public:
     void link();
     void use();
 
-    void set_uniform(const char *name, int value);
+    void set_uniform_1i(const char *name, int value);
+    void set_uniform_1f(const char *name, float value);
 };
 
 #endif // GLSLPROGRAM_H

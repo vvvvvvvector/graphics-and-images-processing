@@ -34,30 +34,53 @@ int main(void)
     square->set_attribute(7, texture_coordinates, 4);
 
     GLSLProgram *shader = new GLSLProgram();
-    shader->compile_shaders_from_file("res/shaders/base_and_texture.shader");
+    shader->compile_shaders_from_file("res/shaders/one_texture_affine_test.shader");
     shader->link();
     shader->use();
 
-    // unsigned int wood_tex_slot = 10;
-    // Texture2D *wood = new Texture2D("res/textures/wood.jpg", wood_tex_slot);
-    // wood->bind(wood_tex_slot);
-    // shader->set_uniform("texture_1", wood_tex_slot);
+    unsigned int wood_tex_slot = 15;
+    Texture2D *wood = new Texture2D("res/textures/wood.jpg", wood_tex_slot);
+    wood->bind(wood_tex_slot);
+    shader->set_uniform_1i("texture_1", wood_tex_slot);
 
-    unsigned int metal_tex_slot = 15;
-    Texture2D *metal = new Texture2D("res/textures/wood.jpg", metal_tex_slot);
-    metal->bind(metal_tex_slot);
-    shader->set_uniform("texture_2", metal_tex_slot);
+    const double fps_limit = 1.0f / 60.0f;
+    double last_frame_time = 0;
+
+    float alpha = 0.0f;
+    float beta = 0.0f;
+    float i = 1.0;
 
     while (!glfwWindowShouldClose(window)) // Loop until the user closes the window
     {
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        square->render();
-
-        glfwSwapBuffers(window); // Swap front and back buffers
+        double now = glfwGetTime();
 
         glfwPollEvents(); // Poll for and process events
+
+        alpha += M_PI / 1000000.0;
+
+        if (alpha > 2 * M_PI)
+            alpha = 0.0f;
+
+        if (beta > 1.0f)
+            i = -1;
+        else if (beta < 0.0f)
+            i = 1;
+
+        beta += 0.000001f * i;
+
+        shader->set_uniform_1f("value", alpha);
+
+        if ((now - last_frame_time) >= fps_limit)
+        {
+            glClearColor(0.2f, 0.3f, beta, 0.9f);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            square->render();
+
+            glfwSwapBuffers(window); // Swap front and back buffers
+
+            last_frame_time = now;
+        }
     }
 
     glfwTerminate();

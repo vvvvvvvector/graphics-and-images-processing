@@ -59,10 +59,10 @@ Geometry *create_triangle()
 Geometry *create_square()
 {
     vec2 positions[] = {
-        {-0.7f, -0.7f},
-        {-0.7f, 0.7f},
-        {0.7f, 0.7f},
-        {0.7f, -0.7f}};
+        {-0.55f, -0.55f},
+        {-0.55f, 0.55f},
+        {0.55f, 0.55f},
+        {0.55f, -0.55f}};
 
     vec4 colors[] = {
         {1.0f, 0.0f, 0.0f, 1.0f},

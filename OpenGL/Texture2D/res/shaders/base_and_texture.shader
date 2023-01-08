@@ -18,7 +18,7 @@ void main()
 #shader fragment
 #version 330 core
 
-uniform sampler2D texture_2;
+uniform sampler2D texture_1;
 
 in vec2 v_texture_coordinates;
 in vec4 vertex_color;              
@@ -26,5 +26,5 @@ out vec4 pixel_color;
                                     
 void main()
 {
-    pixel_color = texture(texture_2, v_texture_coordinates) * vertex_color;
+    pixel_color = texture(texture_1, v_texture_coordinates) * vertex_color;
 }

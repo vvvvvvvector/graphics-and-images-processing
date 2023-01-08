@@ -102,7 +102,12 @@ void GLSLProgram::use()
     glUseProgram(program);
 }
 
-void GLSLProgram::set_uniform(const char *name, int value)
+void GLSLProgram::set_uniform_1i(const char *name, int value)
 {
     glUniform1i(glGetUniformLocation(program, name), value);
+}
+
+void GLSLProgram::set_uniform_1f(const char *name, float value)
+{
+    glUniform1f(glGetUniformLocation(program, name), value);
 }
