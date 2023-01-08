@@ -6,21 +6,19 @@
 #include "texture2d.h"
 #include "mathgl.h"
 
+#define WINDOW_WIDTH 550
+#define WINDOW_HEIGHT 550
+
 int init_glfw();
 int init_glad();
-GLFWwindow *glfw_create_window(int, int, const char *);
-
-const unsigned int window_width = 500;
-const unsigned int window_height = 500;
+GLFWwindow *init_window(int, int, const char *);
 
 int main(void)
 {
     //----------------init----------------
     init_glfw();
 
-    GLFWwindow *window = glfw_create_window(window_width, window_height, "Textures2D");
-
-    glfwMakeContextCurrent(window);
+    GLFWwindow *window = init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "Textures2D");
 
     init_glad();
     //----------------init----------------
@@ -46,24 +44,20 @@ int main(void)
     // shader->set_uniform("texture_1", wood_tex_slot);
 
     unsigned int metal_tex_slot = 15;
-    Texture2D *metal = new Texture2D("res/textures/metal.jpg", metal_tex_slot);
+    Texture2D *metal = new Texture2D("res/textures/wood.jpg", metal_tex_slot);
     metal->bind(metal_tex_slot);
     shader->set_uniform("texture_2", metal_tex_slot);
 
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window)) // Loop until the user closes the window
     {
-        /* Render here */
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         square->render();
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(window); // Swap front and back buffers
 
-        /* Poll for and process events */
-        glfwPollEvents();
+        glfwPollEvents(); // Poll for and process events
     }
 
     glfwTerminate();
@@ -98,7 +92,7 @@ int init_glad()
     return 0;
 }
 
-GLFWwindow *glfw_create_window(int width, int height, const char *name)
+GLFWwindow *init_window(int width, int height, const char *name)
 {
     GLFWwindow *window = glfwCreateWindow(width, height, name, NULL, NULL);
     if (!window)
@@ -107,6 +101,8 @@ GLFWwindow *glfw_create_window(int width, int height, const char *name)
         glfwTerminate();
         return nullptr;
     }
+
+    glfwMakeContextCurrent(window);
 
     return window;
 }
