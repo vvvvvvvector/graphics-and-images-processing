@@ -2,7 +2,7 @@
 
 Texture2D::Texture2D(const char *filepath, unsigned char slot)
 {
-    stbi_set_flip_vertically_on_load(1);
+    stbi_set_flip_vertically_on_load(true);
 
     local_buffer = stbi_load(filepath, &width, &height, &bits_per_pixel, 4);
 

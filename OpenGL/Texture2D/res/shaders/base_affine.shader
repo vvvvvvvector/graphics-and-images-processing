@@ -25,7 +25,7 @@ mat4 rotate_x = mat4(1.0, 0.0, 0.0, 0.0,
                                   
 void main()
 {
-    gl_Position = rotate_x * rotate_y * vertices_position;
+    gl_Position = rotate_x * rotate_z * vertices_position;
     vertex_color = colors_array;
 }
 

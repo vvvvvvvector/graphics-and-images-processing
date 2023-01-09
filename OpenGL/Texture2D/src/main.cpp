@@ -6,8 +6,8 @@
 #include "texture2d.h"
 #include "mathgl.h"
 
-#define WINDOW_WIDTH 700
-#define WINDOW_HEIGHT 700
+#define WINDOW_WIDTH 500
+#define WINDOW_HEIGHT 500
 
 int init_glfw();
 int init_glad();
