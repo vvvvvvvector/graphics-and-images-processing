@@ -31,27 +31,29 @@ Geometry *create_main_axes()
 Geometry *create_pyramid()
 {
     vec3 positions[] = {
-        {0.0f, 0.0f, 0.0f},
-        {0.75f, 0.0f, 0.0f},
-        {0.0f, 0.75f, 0.0f},
-        {0.0f, 0.0f, 0.75f}};
+        {-0.55f, -0.55f, 0.0f},
+        {-0.55f, 0.55f, 0.0f},
+        {0.55f, 0.55f, 0.0f},
+        {0.55f, -0.55f, 0.0f},
+        {0.0f, 0.0f, 0.55f}};
 
     vec4 colors[] = {
         {1.0f, 0.0f, 0.0f, 1.0f},
         {0.0f, 1.0f, 0.0f, 1.0f},
         {0.0f, 0.0f, 1.0f, 1.0f},
+        {0.5f, 0.0f, 0.6f, 1.0f},
         {0.2f, 0.5f, 1.0f, 1.0f}};
 
     Geometry *geometry = new Geometry();
 
     geometry->mode = GL_TRIANGLES;
 
-    const int size = 12;
-    GLuint indices[size] = {0, 1, 2, 0, 1, 3, 0, 2, 3, 1, 2, 3};
+    const int size = 18;
+    GLuint indices[size] = {0, 1, 3, 3, 2, 1, 4, 0, 1, 4, 1, 2, 4, 2, 3, 4, 0, 3};
     geometry->set_indices(indices, size);
 
-    geometry->set_vertices(0, positions, 4);
-    geometry->set_attribute(1, colors, 4);
+    geometry->set_vertices(0, positions, 5);
+    geometry->set_attribute(1, colors, 5);
 
     return geometry;
 }

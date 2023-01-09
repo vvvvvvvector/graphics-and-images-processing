@@ -12,6 +12,7 @@
 int init_glfw();
 int init_glad();
 GLFWwindow *init_window(int, int, const char *);
+void framebuffer_size_callback(GLFWwindow *, int, int);
 
 int main(void)
 {
@@ -22,19 +23,23 @@ int main(void)
 
     const double fps_limit = 1.0 / 60.0;
     double last_frame_time = 0;
+
+    glEnable(GL_DEPTH_TEST);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     //----------------init----------------
 
     Geometry *square = create_square();
+    Geometry *pyramid = create_pyramid();
 
     GLSLProgram *shader = new GLSLProgram();
-    shader->compile_shaders_from_file("res/shaders/one_texture_affine_test.shader");
+    shader->compile_shaders_from_file("res/shaders/base_affine.shader");
     shader->link();
     shader->use();
 
-    unsigned int texture_1_slot = 15;
-    Texture2D *texture_1 = new Texture2D("res/textures/metal_2.jpg", texture_1_slot);
-    texture_1->bind(texture_1_slot);
-    shader->set_uniform_1i("texture_1", texture_1_slot);
+    // unsigned int texture_1_slot = 15;
+    // Texture2D *texture_1 = new Texture2D("res/textures/metal_2.jpg", texture_1_slot);
+    // texture_1->bind(texture_1_slot);
+    // shader->set_uniform_1i("texture_1", texture_1_slot);
 
     // unsigned int texture_2_slot = 16;
     // Texture2D *texture_2 = new Texture2D("res/textures/wood.png", texture_2_slot);
@@ -68,9 +73,10 @@ int main(void)
         if ((now - last_frame_time) >= fps_limit)
         {
             glClearColor(0.2f, 0.3f, beta, 0.9f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            square->render();
+            // square->render();
+            pyramid->render();
 
             glfwSwapBuffers(window); // Swap front and back buffers
 
@@ -79,6 +85,7 @@ int main(void)
     }
 
     delete square;
+    delete pyramid;
 
     glfwDestroyWindow(window);
 
@@ -127,4 +134,9 @@ GLFWwindow *init_window(int width, int height, const char *name)
     glfwMakeContextCurrent(window);
 
     return window;
+}
+
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
+{
+    glViewport(0, 0, width, height);
 }
