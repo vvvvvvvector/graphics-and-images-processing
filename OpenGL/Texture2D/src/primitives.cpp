@@ -49,7 +49,12 @@ Geometry *create_pyramid()
     geometry->mode = GL_TRIANGLES;
 
     const int size = 18;
-    GLuint indices[size] = {0, 1, 3, 3, 2, 1, 4, 0, 1, 4, 1, 2, 4, 2, 3, 4, 0, 3};
+    GLuint indices[size] = {0, 1, 3,
+                            3, 2, 1,
+                            4, 0, 1,
+                            4, 1, 2,
+                            4, 2, 3,
+                            4, 0, 3};
     geometry->set_indices(indices, size);
 
     geometry->set_vertices(0, positions, 5);
