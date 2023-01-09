@@ -9,11 +9,6 @@
 
 class GLSLProgram
 {
-private:
-    GLuint program;
-
-    GLuint compile_shader(GLuint type, const std::string &source);
-
 public:
     GLSLProgram();
     ~GLSLProgram();
@@ -25,6 +20,11 @@ public:
 
     void set_uniform_1i(const char *name, int value);
     void set_uniform_1f(const char *name, float value);
+
+private:
+    GLuint program;
+
+    GLuint compile_shader(GLuint type, const std::string &source);
 };
 
 #endif // GLSLPROGRAM_H

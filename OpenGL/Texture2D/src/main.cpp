@@ -17,10 +17,11 @@ int main(void)
 {
     //----------------init----------------
     init_glfw();
-
     GLFWwindow *window = init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "Textures2D");
-
     init_glad();
+
+    const double fps_limit = 1.0 / 60.0;
+    double last_frame_time = 0;
     //----------------init----------------
 
     Geometry *square = create_square();
@@ -40,9 +41,6 @@ int main(void)
     // texture_2->bind(texture_2_slot);
     // shader->set_uniform_1i("texture_2", texture_2_slot);
 
-    const double fps_limit = 1.0f / 60.0f;
-    double last_frame_time = 0;
-
     float alpha = 0.0f;
     float beta = 0.0f;
     float i = 1.0;
@@ -58,7 +56,7 @@ int main(void)
         if (alpha > 2 * M_PI)
             alpha = 0.0f;
 
-        shader->set_uniform_1f("value", alpha);
+        shader->set_uniform_1f("alpha", alpha);
 
         if (beta > 1.0f)
             i = -1;
@@ -79,6 +77,10 @@ int main(void)
             last_frame_time = now;
         }
     }
+
+    delete square;
+
+    glfwDestroyWindow(window);
 
     glfwTerminate();
 

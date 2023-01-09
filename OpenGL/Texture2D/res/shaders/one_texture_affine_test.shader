@@ -1,31 +1,26 @@
 #shader vertex
 #version 330 core
 
-uniform float value;
+uniform float alpha;
 
 layout (location = 0) in vec4 vertices_position;
 layout (location = 7) in vec2 texture_coordinates; 
 
 out vec2 v_texture_coordinates;
 
-mat4 scale = mat4(value, 0.0, 0.0, 0.0,  
-                  0.0, value, 0.0, 0.0,  
-                  0.0, 0.0, value, 0.0,  
-                  0.0, 0.0, 0.0, 1.0); 
-
-mat4 rotate_z = mat4(cos(value), -sin(value), 0.0, 0.0,  
-                  sin(value), cos(value), 0.0, 0.0,  
+mat4 rotate_z = mat4(cos(alpha), -sin(alpha), 0.0, 0.0,  
+                  sin(alpha), cos(alpha), 0.0, 0.0,  
                   0.0, 0.0, 1.0, 0.0,  
                   0.0, 0.0, 0.0, 1.0); 
 
-mat4 rotate_y = mat4(cos(value), 0.0, sin(value), 0.0,  
+mat4 rotate_y = mat4(cos(alpha), 0.0, sin(alpha), 0.0,  
                   0.0, 1.0, 0.0, 0.0,  
-                  -sin(value), 0.0, cos(value), 0.0,  
+                  -sin(alpha), 0.0, cos(alpha), 0.0,  
                   0.0, 0.0, 0.0, 1.0); 
 
 mat4 rotate_x = mat4(1.0, 0.0, 0.0, 0.0,  
-                  0.0, cos(value), -sin(value), 0.0,  
-                  0.0, sin(value), cos(value), 0.0,  
+                  0.0, cos(alpha), -sin(alpha), 0.0,  
+                  0.0, sin(alpha), cos(alpha), 0.0,  
                   0.0, 0.0, 0.0, 1.0); 
 
 void main()
