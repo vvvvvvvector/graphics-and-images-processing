@@ -1,6 +1,8 @@
 #shader vertex
 #version 330 core
 
+uniform mat4 MVMat;
+
 layout (location = 0) in vec4 vertices_position;
 layout (location = 7) in vec2 texture_coords; 
 
@@ -8,7 +10,7 @@ out vec2 v_texture_coords;
 
 void main()
 {
-    gl_Position = vertices_position;
+    gl_Position = MVMat * vertices_position;
     v_texture_coords = texture_coords;
 }
 
