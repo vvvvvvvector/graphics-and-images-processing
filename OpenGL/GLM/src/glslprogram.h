@@ -7,6 +7,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "mathgl.h"
+
 class GLSLProgram
 {
 public:
@@ -20,6 +22,7 @@ public:
 
     void set_uniform_1i(const char *name, int value);
     void set_uniform_1f(const char *name, float value);
+    void set_unifrom_4fv(const char *name, glm::mat4 mat);
 
 private:
     GLuint program;

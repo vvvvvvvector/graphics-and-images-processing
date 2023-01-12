@@ -6,33 +6,41 @@
 #include "texture2d.h"
 #include "mathgl.h"
 
-#define WINDOW_WIDTH 500
-#define WINDOW_HEIGHT 500
+#define WINDOW_WIDTH 700
+#define WINDOW_HEIGHT 700
+
+int pos_x = 0, pos_y = 0;
 
 int init_glfw();
 int init_glad();
 GLFWwindow *init_window(int, int, const char *);
+
 void framebuffer_size_callback(GLFWwindow *, int, int);
+void mouse_move_callback(GLFWwindow *, double, double);
 
 int main(void)
 {
     //----------------init----------------
     init_glfw();
-    GLFWwindow *window = init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "Textures2D");
+    GLFWwindow *window = init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "GLM");
     init_glad();
 
     const double fps_limit = 1.0 / 60.0;
     double last_frame_time = 0;
 
+    glm::mat4 identity = glm::mat4(1.0);
+
     glEnable(GL_DEPTH_TEST);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    glfwSetCursorPosCallback(window, mouse_move_callback);
     //----------------init----------------
 
     Geometry *square = create_square();
     Geometry *pyramid = create_pyramid();
 
     GLSLProgram *shader = new GLSLProgram();
-    shader->compile_shaders_from_file("res/shaders/base_affine.shader");
+    shader->compile_shaders_from_file("res/shaders/base.shader");
     shader->link();
     shader->use();
 
@@ -46,7 +54,6 @@ int main(void)
     // texture_2->bind(texture_2_slot);
     // shader->set_uniform_1i("texture_2", texture_2_slot);
 
-    float alpha = 0.0f;
     float beta = 0.0f;
     float i = 1.0;
 
@@ -56,12 +63,11 @@ int main(void)
 
         glfwPollEvents(); // Poll for and process events
 
-        alpha += M_PI / 1000000.0;
+        glm::mat4 viewMat = glm::mat4(1.0);
+        viewMat = viewMat * glm::rotate(identity, pos_y / 100.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+        viewMat = viewMat * glm::rotate(identity, pos_x / 100.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
-        if (alpha > 2 * M_PI)
-            alpha = 0.0f;
-
-        shader->set_uniform_1f("alpha", alpha);
+        shader->set_unifrom_4fv("MVMat", viewMat);
 
         if (beta > 1.0f)
             i = -1;
@@ -139,4 +145,15 @@ GLFWwindow *init_window(int width, int height, const char *name)
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
+{
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+    {
+        return;
+    }
+
+    pos_x = xpos;
+    pos_y = ypos;
 }
