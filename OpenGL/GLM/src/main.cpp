@@ -9,6 +9,7 @@
 #define WINDOW_WIDTH 700
 #define WINDOW_HEIGHT 700
 
+float zoom = 1.0f;
 int pos_x = 0, pos_y = 0;
 
 int init_glfw();
@@ -17,6 +18,7 @@ GLFWwindow *init_window(int, int, const char *);
 
 void framebuffer_size_callback(GLFWwindow *, int, int);
 void mouse_move_callback(GLFWwindow *, double, double);
+void scroll_callback(GLFWwindow *, double, double);
 
 int main(void)
 {
@@ -31,9 +33,10 @@ int main(void)
     glm::mat4 identity = glm::mat4(1.0);
 
     glEnable(GL_DEPTH_TEST);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_move_callback);
+    glfwSetScrollCallback(window, scroll_callback);
     //----------------init----------------
 
     Geometry *square = create_square();
@@ -64,8 +67,9 @@ int main(void)
         glfwPollEvents(); // Poll for and process events
 
         glm::mat4 viewMat = glm::mat4(1.0);
-        viewMat = viewMat * glm::rotate(identity, pos_y / 100.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-        viewMat = viewMat * glm::rotate(identity, pos_x / 100.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+        viewMat *= glm::scale(identity, glm::vec3(zoom, zoom, zoom));
+        viewMat *= glm::rotate(identity, pos_y / 100.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+        viewMat *= glm::rotate(identity, pos_x / 100.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
         shader->set_unifrom_4fv("MVMat", viewMat);
 
@@ -81,7 +85,6 @@ int main(void)
             glClearColor(0.2f, 0.3f, beta, 0.9f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            // square->render();
             pyramid->render();
 
             glfwSwapBuffers(window); // Swap front and back buffers
@@ -150,10 +153,13 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 {
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
-    {
         return;
-    }
 
-    pos_x = xpos;
-    pos_y = ypos;
+    pos_x = (int)xpos;
+    pos_y = (int)ypos;
+}
+
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
+{
+    zoom += yoffset / 1000.0f;
 }
