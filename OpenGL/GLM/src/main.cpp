@@ -9,7 +9,7 @@
 #define WINDOW_WIDTH 700
 #define WINDOW_HEIGHT 700
 
-float zoom = 0.5f;
+float zoom = 0.75f;
 int pos_x = 0, pos_y = 0;
 
 int init_glfw();
@@ -39,8 +39,9 @@ int main(void)
     glfwSetScrollCallback(window, scroll_callback);
     //----------------init----------------
 
-    Geometry *square = create_square();
     Geometry *pyramid = create_pyramid();
+    Geometry *square = create_square();
+    Geometry *axes = create_main_axes();
 
     GLSLProgram *basic_shader = new GLSLProgram();
     basic_shader->compile_shaders_from_file("res/shaders/base.shader");
@@ -51,10 +52,16 @@ int main(void)
     texture_shader->link();
 
     unsigned int texture_1_slot = 15;
-    Texture2D *texture_1 = new Texture2D("res/textures/metal_2.jpg", texture_1_slot);
+    Texture2D *texture_1 = new Texture2D("res/textures/earth.jpg", texture_1_slot);
     texture_1->bind(texture_1_slot);
 
+    unsigned int texture_2_slot = 16;
+    Texture2D *texture_2 = new Texture2D("res/textures/moon.jpg", texture_2_slot);
+    texture_2->bind(texture_2_slot);
+
     float alpha = 0.0f;
+    float beta = 0.0f;
+    float gamma = 0.0f;
 
     float blue_value = 0.0f;
     float i = 1.0;
@@ -75,6 +82,16 @@ int main(void)
 
         alpha += M_PI / 100000.0f;
 
+        if (beta > 2 * M_PI)
+            beta = 0.0f;
+
+        beta += M_PI / 75000.0f;
+
+        if (gamma > 2 * M_PI)
+            gamma = 0.0f;
+
+        gamma += M_PI / 80000.0f;
+
         if (blue_value > 1.0f)
             i = -1;
         else if (blue_value < 0.0f)
@@ -87,34 +104,57 @@ int main(void)
             glClearColor(0.2f, 0.3f, blue_value, 0.9f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            // --------figure 1--------
+            //--------figure 2--------
             texture_shader->use();
             texture_shader->set_uniform_1i("texture_1", texture_1_slot);
 
-            glm::mat4 square_mat = identity;
+            glm::mat4 square_1_mat = identity;
             glm::mat4 R = glm::rotate(identity, alpha, glm::vec3(0.0f, 0.0f, 1.0f));
             glm::mat4 T = glm::translate(identity, glm::vec3(1.0f, 0.0f, -0.5f));
             glm::mat4 R_reverse = glm::rotate(identity, -alpha, glm::vec3(0.0f, 0.0f, 1.0f));
 
-            square_mat = R * T * R_reverse;
+            square_1_mat = glm::scale(identity, glm::vec3(0.75f, 0.75f, 0.75f)) * R * T * R_reverse;
 
-            texture_shader->set_unifrom_4fv("MVMat", viewMat * square_mat);
+            texture_shader->set_unifrom_4fv("MVMat", viewMat * square_1_mat);
 
             square->render();
-            // --------figure 1--------
+            //--------figure 2--------
 
-            // --------figure 2--------
+            //--------figure 1--------
+            texture_shader->use();
+
+            texture_shader->set_uniform_1i("texture_1", texture_2_slot);
+
+            glm::mat4 square_2_mat = identity;
+
+            square_2_mat = glm::scale(identity, glm::vec3(0.45f, 0.45f, 0.45f)) * glm::rotate(identity, gamma, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::translate(identity, glm::vec3(3.0f, 0.0f, -0.5f)) * glm::rotate(identity, -gamma, glm::vec3(0.0f, 0.0f, 1.0f));
+
+            texture_shader->set_unifrom_4fv("MVMat", viewMat * square_1_mat * square_2_mat);
+
+            square->render();
+            //--------figure 1--------
+
+            //--------figure 3--------
             basic_shader->use();
 
             glm::mat4 pyramid_mat = identity;
             glm::mat4 S = glm::scale(identity, glm::vec3(0.55f, 0.55f, 0.55f));
+            glm::mat4 R_pyramid = glm::rotate(identity, beta, glm::vec3(0.0f, 0.0f, 1.0f));
 
-            pyramid_mat = S;
+            pyramid_mat = S * R_pyramid;
 
             basic_shader->set_unifrom_4fv("MVMat", viewMat * pyramid_mat);
 
             pyramid->render();
-            // --------figure 2--------
+            //--------figure 3--------
+
+            //--------figure 4--------
+            basic_shader->use();
+
+            basic_shader->set_unifrom_4fv("MVMat", viewMat);
+
+            axes->render();
+            //--------figure 4--------
 
             glfwSwapBuffers(window); // Swap front and back buffers
 
