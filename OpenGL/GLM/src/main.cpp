@@ -6,11 +6,17 @@
 #include "texture2d.h"
 #include "mathgl.h"
 
+#include <set>
+
 #define WINDOW_WIDTH 700
 #define WINDOW_HEIGHT 700
 
 float zoom = 0.75f;
 int pos_x = 0, pos_y = 0;
+
+Camera main_camera = Camera();
+
+glm::mat4 projMat = glm::mat4(1.0);
 
 int init_glfw();
 int init_glad();
@@ -19,6 +25,35 @@ GLFWwindow *init_window(int, int, const char *);
 void framebuffer_size_callback(GLFWwindow *, int, int);
 void mouse_move_callback(GLFWwindow *, double, double);
 void scroll_callback(GLFWwindow *, double, double);
+
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_W && action == GLFW_PRESS)
+    {
+        std::cout << "w\n";
+    }
+
+    if (key == GLFW_KEY_S && action == GLFW_PRESS)
+    {
+        std::cout << "s\n";
+    }
+
+    if (key == GLFW_KEY_A && action == GLFW_PRESS)
+    {
+        std::cout << "a\n";
+    }
+
+    if (key == GLFW_KEY_D && action == GLFW_PRESS)
+    {
+        std::cout << "d\n";
+    }
+}
+
+void process_camera()
+{
+    // main_camera.up = Rot_S(pos_y) * main_camera.up;
+    // main_camera.forward = Rot_up(pos_x) * main_camera.forward;
+}
 
 int main(void)
 {
@@ -37,6 +72,7 @@ int main(void)
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_move_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    glfwSetKeyCallback(window, key_callback);
     //----------------init----------------
 
     Geometry *pyramid = create_pyramid();
@@ -60,12 +96,13 @@ int main(void)
     texture_2->bind(texture_2_slot);
 
     float alpha = 0.0f;
-    float beta = 0.0f;
-    float fi = 0.0f;
-    float gamma = 0.0f;
 
     float blue_value = 0.0f;
     float i = 1.0;
+
+    Frame *square_frame = new Frame();
+
+    Camera *main_camera = new Camera();
 
     while (!glfwWindowShouldClose(window)) // Loop until the user closes the window
     {
@@ -73,30 +110,17 @@ int main(void)
 
         glfwPollEvents(); // Poll for and process events
 
-        glm::mat4 viewMat = glm::mat4(1.0);
-        viewMat *= glm::scale(identity, glm::vec3(zoom, zoom, zoom));
-        viewMat *= glm::rotate(identity, pos_y / 100.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-        viewMat *= glm::rotate(identity, pos_x / 100.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+        process_camera();
+        glm::mat4 viewMat = main_camera->matrix();
+        // viewMat *= glm::scale(identity, glm::vec3(zoom, zoom, zoom));
+        // viewMat *= glm::rotate(identity, pos_y / 100.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+        // viewMat *= glm::rotate(identity, pos_x / 100.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+        // viewMat = glm::translate(identity, glm::vec3(0.0f, 0.0f, -0.5f));
 
         if (alpha > 2 * M_PI)
             alpha = 0.0f;
 
         alpha += M_PI / 100000.0f;
-
-        if (beta > 2 * M_PI)
-            beta = 0.0f;
-
-        beta += M_PI / 75000.0f;
-
-        if (gamma > 2 * M_PI)
-            gamma = 0.0f;
-
-        gamma += M_PI / 80000.0f;
-
-        if (fi > 2 * M_PI)
-            fi = 0.0f;
-
-        fi += M_PI / 85000.0f;
 
         if (blue_value > 1.0f)
             i = -1;
@@ -112,56 +136,26 @@ int main(void)
 
             //--------figure 1--------
             texture_shader->use();
-            texture_shader->set_uniform_1i("texture_1", texture_1_slot);
 
-            glm::mat4 square_1_mat = identity;
             glm::mat4 R = glm::rotate(identity, alpha, glm::vec3(0.0f, 0.0f, 1.0f));
-            glm::mat4 T = glm::translate(identity, glm::vec3(1.0f, 0.0f, -0.5f));
-            glm::mat4 R_reverse = glm::rotate(identity, -alpha, glm::vec3(0.0f, 0.0f, 1.0f));
-            glm::mat4 R_fi = glm::rotate(identity, fi, glm::vec3(0.0f, 0.0f, 1.0f));
 
-            square_1_mat = glm::scale(identity, glm::vec3(0.75f, 0.75f, 0.75f)) * R * T * R_reverse * R_fi;
+            square_frame->pos = R * glm::vec4(1.0, 0.0, 0.0, 1.0);
+            square_frame->up = glm::vec4(0.0, 1.0, 0.0, 1.0);
 
-            texture_shader->set_unifrom_4fv("MVMat", viewMat * square_1_mat);
+            texture_shader->set_uniform_1i("texture_1", texture_1_slot);
+            texture_shader->set_unifrom_4fv("MVMat", viewMat * square_frame->matrix());
+            texture_shader->set_unifrom_4fv("ProjMat", projMat);
 
             square->render();
             //--------figure 1--------
 
-            //--------figure 2--------
-            texture_shader->use();
-
-            texture_shader->set_uniform_1i("texture_1", texture_2_slot);
-
-            glm::mat4 square_2_mat = identity;
-
-            square_2_mat = glm::scale(identity, glm::vec3(0.45f, 0.45f, 0.45f)) * glm::rotate(identity, gamma, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::translate(identity, glm::vec3(3.0f, 0.0f, -0.5f)) * glm::rotate(identity, -gamma, glm::vec3(0.0f, 0.0f, 1.0f));
-
-            texture_shader->set_unifrom_4fv("MVMat", viewMat * square_1_mat * square_2_mat);
-
-            square->render();
-            //--------figure 2--------
-
-            //--------figure 3--------
-            basic_shader->use();
-
-            glm::mat4 pyramid_mat = identity;
-            glm::mat4 S = glm::scale(identity, glm::vec3(0.55f, 0.55f, 0.55f));
-            glm::mat4 R_pyramid = glm::rotate(identity, beta, glm::vec3(0.0f, 0.0f, 1.0f));
-
-            pyramid_mat = S * R_pyramid;
-
-            basic_shader->set_unifrom_4fv("MVMat", viewMat * pyramid_mat);
-
-            pyramid->render();
-            //--------figure 3--------
-
-            //--------figure 4--------
+            //--------figure 1--------
             basic_shader->use();
 
             basic_shader->set_unifrom_4fv("MVMat", viewMat);
 
             axes->render();
-            //--------figure 4--------
+            //--------figure 1--------
 
             glfwSwapBuffers(window); // Swap front and back buffers
 
@@ -225,6 +219,11 @@ GLFWwindow *init_window(int width, int height, const char *name)
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
+
+    float aspect = width / (float)height;
+
+    // projMat = glm::ortho(-1.0f * aspect, 1.0f * aspect, -1.0f, 1.0f, -1.0f, 1.0f);
+    projMat = glm::perspective(60.0f, aspect, 0.1f, 10.0f);
 }
 
 void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
