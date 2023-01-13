@@ -61,6 +61,7 @@ int main(void)
 
     float alpha = 0.0f;
     float beta = 0.0f;
+    float fi = 0.0f;
     float gamma = 0.0f;
 
     float blue_value = 0.0f;
@@ -92,6 +93,11 @@ int main(void)
 
         gamma += M_PI / 80000.0f;
 
+        if (fi > 2 * M_PI)
+            fi = 0.0f;
+
+        fi += M_PI / 85000.0f;
+
         if (blue_value > 1.0f)
             i = -1;
         else if (blue_value < 0.0f)
@@ -104,7 +110,7 @@ int main(void)
             glClearColor(0.2f, 0.3f, blue_value, 0.9f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            //--------figure 2--------
+            //--------figure 1--------
             texture_shader->use();
             texture_shader->set_uniform_1i("texture_1", texture_1_slot);
 
@@ -112,15 +118,16 @@ int main(void)
             glm::mat4 R = glm::rotate(identity, alpha, glm::vec3(0.0f, 0.0f, 1.0f));
             glm::mat4 T = glm::translate(identity, glm::vec3(1.0f, 0.0f, -0.5f));
             glm::mat4 R_reverse = glm::rotate(identity, -alpha, glm::vec3(0.0f, 0.0f, 1.0f));
+            glm::mat4 R_fi = glm::rotate(identity, fi, glm::vec3(0.0f, 0.0f, 1.0f));
 
-            square_1_mat = glm::scale(identity, glm::vec3(0.75f, 0.75f, 0.75f)) * R * T * R_reverse;
+            square_1_mat = glm::scale(identity, glm::vec3(0.75f, 0.75f, 0.75f)) * R * T * R_reverse * R_fi;
 
             texture_shader->set_unifrom_4fv("MVMat", viewMat * square_1_mat);
 
             square->render();
-            //--------figure 2--------
-
             //--------figure 1--------
+
+            //--------figure 2--------
             texture_shader->use();
 
             texture_shader->set_uniform_1i("texture_1", texture_2_slot);
@@ -132,7 +139,7 @@ int main(void)
             texture_shader->set_unifrom_4fv("MVMat", viewMat * square_1_mat * square_2_mat);
 
             square->render();
-            //--------figure 1--------
+            //--------figure 2--------
 
             //--------figure 3--------
             basic_shader->use();
@@ -164,6 +171,7 @@ int main(void)
 
     delete square;
     delete pyramid;
+    delete axes;
 
     glfwDestroyWindow(window);
 
