@@ -8,6 +8,26 @@ GLWidget widget = GLWidget();
 const int WINDOW_WIDTH = 700;
 const int WINDOW_HEIGHT = 700;
 
+glm::mat3 rotate_vec_u = {
+    1, 0, 0,
+    0, cos(M_PI / 75.0f), -sin(M_PI / 75.0f),
+    0, sin(M_PI / 75.0f), cos(M_PI / 75.0f)};
+
+glm::mat3 rotate_vec_d = {
+    1, 0, 0,
+    0, cos(-M_PI / 75.0f), -sin(-M_PI / 75.0f),
+    0, sin(-M_PI / 75.0f), cos(-M_PI / 75.0f)};
+
+glm::mat3 rotate_vec_l = {
+    cos(M_PI / 75.0f), 0, -sin(M_PI / 75.0f),
+    0, 1, 0,
+    -sin(M_PI / 75.0f), 0, cos(M_PI / 75.0f)};
+
+glm::mat3 rotate_vec_r = {
+    cos(-M_PI / 75.0f), 0, -sin(-M_PI / 75.0f),
+    0, 1, 0,
+    -sin(-M_PI / 75.0f), 0, cos(-M_PI / 75.0f)};
+
 glm::mat4 projMat = glm::perspective(60.0f, WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 10.0f);
 
 int init_glfw();
@@ -16,6 +36,16 @@ GLFWwindow *init_window(int, int, const char *);
 
 void framebuffer_size_callback(GLFWwindow *, int, int);
 void key_callback(GLFWwindow *, int, int, int, int);
+
+void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
+{
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+    {
+        return;
+    }
+
+    // widget.main_camera->up *= glm::scale(glm::mat4(1.0f), ypos / 10000.0f, glm::vec3(0.0, 1.0f, 0.0f));
+}
 
 int main(void)
 {
@@ -35,6 +65,8 @@ int main(void)
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, key_callback);
+
+    glfwSetCursorPosCallback(window, mouse_move_callback);
     //----------------init----------------
 
     float alpha = 0.0f;
@@ -166,4 +198,16 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         widget.main_camera->pos -= 0.1f * widget.main_camera->s();
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+        widget.main_camera->forward = rotate_vec_l * widget.main_camera->forward;
+
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        widget.main_camera->forward = rotate_vec_r * widget.main_camera->forward;
+
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        widget.main_camera->up = rotate_vec_u * widget.main_camera->up;
+
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        widget.main_camera->up = rotate_vec_d * widget.main_camera->up;
 }
