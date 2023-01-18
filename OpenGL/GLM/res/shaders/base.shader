@@ -2,6 +2,7 @@
 #version 330 core
 
 uniform mat4 MVMat;
+uniform mat4 ProjMat;
 
 layout (location = 0) in vec4 vertices_position;
 layout (location = 1) in vec4 colors_array;
@@ -10,7 +11,7 @@ out vec4 vertex_color;
 
 void main()
 {
-    gl_Position = MVMat * vertices_position;
+    gl_Position = ProjMat * MVMat * vertices_position;
     vertex_color = colors_array;
 }
 

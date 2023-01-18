@@ -17,12 +17,14 @@ public:
     GLWidget();
 
     std::map<std::string, GLSLProgram *> shader;
+
     std::map<std::string, Geometry *> geometry;
+    std::map<std::string, Frame *> frame;
+
     std::map<std::string, Texture2D *> texture;
     std::map<std::string, unsigned int> texture_slot;
 
-    glm::mat4 viewMat;
-    glm::mat4 projMat;
+    Camera *main_camera;
 
     void init_widget();
 

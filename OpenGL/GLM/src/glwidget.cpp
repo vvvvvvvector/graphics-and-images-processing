@@ -2,6 +2,7 @@
 
 GLWidget::GLWidget()
 {
+    main_camera = new Camera();
 }
 
 void GLWidget::init_widget()
@@ -25,7 +26,10 @@ void GLWidget::create_shaders()
 void GLWidget::create_geometry()
 {
     geometry["pyramid"] = create_pyramid();
+
     geometry["square"] = create_square();
+    frame["square"] = new Frame();
+
     geometry["axes"] = create_main_axes();
 }
 
@@ -38,4 +42,8 @@ void GLWidget::create_textures()
     texture_slot["moon"] = 16;
     texture["moon"] = new Texture2D("res/textures/moon.jpg", texture_slot["moon"]);
     texture["moon"]->bind(texture_slot["moon"]);
+
+    texture_slot["lenna"] = 17;
+    texture["lenna"] = new Texture2D("res/textures/lenna.png", texture_slot["lenna"]);
+    texture["lenna"]->bind(texture_slot["lenna"]);
 }
