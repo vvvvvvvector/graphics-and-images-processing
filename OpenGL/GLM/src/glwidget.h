@@ -2,6 +2,7 @@
 #define GLWIDGET_H
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include <map>
 
@@ -24,14 +25,28 @@ public:
     std::map<std::string, Texture2D *> texture;
     std::map<std::string, unsigned int> texture_slot;
 
-    Camera *main_camera;
+    glm::mat4 viewMat;
+    glm::mat4 projMat;
 
-    void init_widget();
+    glm::mat4 identity;
+
+    Camera main_camera;
+
+    // ----------glfw----------
+    GLFWwindow *glfw_window;
+    // ----------glfw----------
 
 private:
     void create_shaders();
     void create_textures();
     void create_geometry();
+
+    // ----------init----------
+    int init_glfw();
+    int init_glad();
+    void init_window(int, int, const char *);
+    void init_widget();
+    // ----------init----------
 };
 
 #endif // GLWIDGET_H
