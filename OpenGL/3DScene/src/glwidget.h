@@ -11,6 +11,8 @@
 #include "geometry.h"
 #include "texture2d.h"
 #include "primitives.h"
+#include "frame.h"
+#include "camera.h"
 
 class GLWidget
 {
