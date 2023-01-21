@@ -2,8 +2,8 @@
 
 Camera::Camera()
 {
-    pos = glm::vec3(-2.5, 2, 1);
-    forward = glm::vec3(0.3, -0.5, -1);
+    pos = glm::vec3(-2.5, 2, 1.75);
+    forward = glm::vec3(0.4, -0.5, -1);
     up = glm::vec3(0, 1, 0);
 }
 

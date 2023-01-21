@@ -71,6 +71,7 @@ int main(void)
             glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
             glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["square"].matrix());
             glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+
             glwidget.geometry["square"]->render();
             //--------object 1--------
 
@@ -120,23 +121,24 @@ int main(void)
             glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
             glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["square"].matrix());
             glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+
             glwidget.geometry["square"]->render();
             //--------object 5--------
 
             //--------object 6--------
             glwidget.shader["texture"]->use();
 
-            glm::mat4 rotate_earth_axis = glm::rotate(glwidget.identity, glm::radians(-25.0f), glm::vec3(0.0f, 0.0f, 1.0f));
             glm::mat4 rotate_earth_orbit = glm::rotate(glwidget.identity, alpha, glm::vec3(0.0f, 0.0f, 1.0f));
-            glm::mat4 rotate_earth = glm::rotate(glwidget.identity, beta, glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::mat4 rotate_earth = glm::rotate(glwidget.identity, beta, glm::vec3(1.0f, 1.0f, 0.0f));
 
             glwidget.frame["earth"].pos = rotate_earth_orbit * glm::vec4(1.2, 0.0f, -2.8f, 1.0f);
-            glwidget.frame["earth"].up = rotate_earth_axis * rotate_earth * glm::vec4(0.0, 1.0f, 0.0f, 1.0f);
+            glwidget.frame["earth"].up = rotate_earth * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
             glwidget.shader["texture"]->set_uniform_1i("texture_1", glwidget.texture_slot["earth"]);
             glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
             glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["earth"].matrix());
             glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+
             glwidget.geometry["square"]->render();
             //--------object 6--------
 
@@ -152,6 +154,7 @@ int main(void)
             glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
             glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["moon"].matrix() * scale_moon);
             glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+
             glwidget.geometry["square"]->render();
             //--------object 7--------
 
