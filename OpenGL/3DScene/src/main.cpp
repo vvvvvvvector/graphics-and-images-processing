@@ -20,6 +20,8 @@ int main(void)
     //----------------callbacks----------------
 
     float alpha = 0.0f;
+    float beta = 0.0f;
+    float gamma = 0.0f;
 
     float blue_value = 0.0f;
     float i = 1.0;
@@ -36,6 +38,16 @@ int main(void)
             alpha = 0.0f;
 
         alpha += M_PI / 750000.0f;
+
+        if (beta > 2 * M_PI)
+            beta = 0.0f;
+
+        beta += M_PI / 500000.0f;
+
+        if (gamma > 2 * M_PI)
+            gamma = 0.0f;
+
+        gamma += M_PI / 600000.0f;
 
         if (blue_value > 1.0f)
             i = -1;
@@ -102,14 +114,46 @@ int main(void)
             //--------object 5--------
             glwidget.shader["texture"]->use();
 
-            glwidget.frame["square"].pos = glm::vec4(2.0f, 1.2f, -5.0f, 1.0f);
+            glwidget.frame["square"].pos = glm::vec4(1.5f, 1.2f, -5.0f, 1.0f);
 
-            glwidget.shader["texture"]->set_uniform_1i("texture_1", glwidget.texture_slot["moon"]);
+            glwidget.shader["texture"]->set_uniform_1i("texture_1", glwidget.texture_slot["grass"]);
             glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
             glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["square"].matrix());
             glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
             glwidget.geometry["square"]->render();
             //--------object 5--------
+
+            //--------object 6--------
+            glwidget.shader["texture"]->use();
+
+            glm::mat4 rotate_earth_axis = glm::rotate(glwidget.identity, glm::radians(-25.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+            glm::mat4 rotate_earth_orbit = glm::rotate(glwidget.identity, alpha, glm::vec3(0.0f, 0.0f, 1.0f));
+            glm::mat4 rotate_earth = glm::rotate(glwidget.identity, beta, glm::vec3(0.0f, 1.0f, 0.0f));
+
+            glwidget.frame["earth"].pos = rotate_earth_orbit * glm::vec4(1.2, 0.0f, -2.8f, 1.0f);
+            glwidget.frame["earth"].up = rotate_earth_axis * rotate_earth * glm::vec4(0.0, 1.0f, 0.0f, 1.0f);
+
+            glwidget.shader["texture"]->set_uniform_1i("texture_1", glwidget.texture_slot["earth"]);
+            glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
+            glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["earth"].matrix());
+            glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+            glwidget.geometry["square"]->render();
+            //--------object 6--------
+
+            //--------object 7--------
+            glwidget.shader["texture"]->use();
+
+            glm::mat4 scale_moon = glm::scale(glwidget.identity, glm::vec3(0.55f, 0.55f, 0.55f));
+            glm::mat4 rotate_moon_orbit = glm::rotate(glwidget.identity, gamma, glm::vec3(0.0f, 0.0f, 1.0f));
+
+            glwidget.frame["moon"].pos = glm::vec4(glwidget.frame["earth"].pos, 1.0) + rotate_moon_orbit * glm::vec4(1.5, 0.0f, 0.0f, 1.0f);
+
+            glwidget.shader["texture"]->set_uniform_1i("texture_1", glwidget.texture_slot["moon"]);
+            glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
+            glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["moon"].matrix() * scale_moon);
+            glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+            glwidget.geometry["square"]->render();
+            //--------object 7--------
 
             glfwSwapBuffers(glwidget.glfw_window); // Swap front and back buffers
 

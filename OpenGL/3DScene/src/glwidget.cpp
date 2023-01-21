@@ -1,7 +1,7 @@
 #include "glwidget.h"
 
-const int WINDOW_WIDTH = 700;
-const int WINDOW_HEIGHT = 700;
+const int WINDOW_WIDTH = 800;
+const int WINDOW_HEIGHT = 800;
 
 GLWidget::GLWidget()
 {
@@ -40,6 +40,8 @@ void GLWidget::create_geometry()
 
     geometry["square"] = create_square();
     frame["square"] = Frame();
+    frame["earth"] = Frame();
+    frame["moon"] = Frame();
 
     geometry["axes"] = create_main_axes();
     frame["axes"] = Frame();
@@ -62,6 +64,14 @@ void GLWidget::create_textures()
     texture_slot["metal"] = 18;
     texture["metal"] = new Texture2D("res/textures/metal_1.jpg", texture_slot["metal"]);
     texture["metal"]->bind(texture_slot["metal"]);
+
+    texture_slot["earth"] = 19;
+    texture["earth"] = new Texture2D("res/textures/earth.jpg", texture_slot["earth"]);
+    texture["earth"]->bind(texture_slot["earth"]);
+
+    texture_slot["grass"] = 20;
+    texture["grass"] = new Texture2D("res/textures/grass.jpg", texture_slot["grass"]);
+    texture["grass"]->bind(texture_slot["grass"]);
 }
 
 int GLWidget::init_glfw()
