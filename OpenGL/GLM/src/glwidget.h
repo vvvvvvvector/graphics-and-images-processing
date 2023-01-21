@@ -20,7 +20,7 @@ public:
     std::map<std::string, GLSLProgram *> shader;
 
     std::map<std::string, Geometry *> geometry;
-    std::map<std::string, Frame *> frame;
+    std::map<std::string, Frame> frame;
 
     std::map<std::string, Texture2D *> texture;
     std::map<std::string, unsigned int> texture_slot;

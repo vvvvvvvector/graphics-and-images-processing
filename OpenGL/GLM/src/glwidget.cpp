@@ -8,13 +8,13 @@ GLWidget::GLWidget()
     init_widget();
 
     identity = glm::mat4(1.0f);
-    projMat = glm::perspective(30.0f, WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 10.0f);
+    projMat = glm::perspective(30.0f, WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.01f, 15.0f);
 }
 
 void GLWidget::init_widget()
 {
     init_glfw();
-    init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "Refactor");
+    init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "3DScene");
     init_glad();
 
     create_shaders();
@@ -36,11 +36,13 @@ void GLWidget::create_shaders()
 void GLWidget::create_geometry()
 {
     geometry["pyramid"] = create_pyramid();
+    frame["pyramid"] = Frame();
 
     geometry["square"] = create_square();
-    frame["square"] = new Frame();
+    frame["square"] = Frame();
 
     geometry["axes"] = create_main_axes();
+    frame["axes"] = Frame();
 }
 
 void GLWidget::create_textures()
@@ -56,6 +58,10 @@ void GLWidget::create_textures()
     texture_slot["lenna"] = 17;
     texture["lenna"] = new Texture2D("res/textures/lenna.png", texture_slot["lenna"]);
     texture["lenna"]->bind(texture_slot["lenna"]);
+
+    texture_slot["metal"] = 18;
+    texture["metal"] = new Texture2D("res/textures/metal_1.jpg", texture_slot["metal"]);
+    texture["metal"]->bind(texture_slot["metal"]);
 }
 
 int GLWidget::init_glfw()

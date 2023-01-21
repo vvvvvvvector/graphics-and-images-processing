@@ -50,35 +50,66 @@ int main(void)
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
 
-            //--------figure 1--------
+            //--------object 1--------
             glwidget.shader["texture"]->use();
 
-            glwidget.frame["square"]->pos = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            glwidget.frame["square"].pos = glm::vec4(0.0f, 0.0f, -7.0f, 1.0f);
+
+            glwidget.shader["texture"]->set_uniform_1i("texture_1", glwidget.texture_slot["metal"]);
+            glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
+            glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["square"].matrix());
+            glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+            glwidget.geometry["square"]->render();
+            //--------object 1--------
+
+            //--------object 2--------
+            glwidget.shader["texture"]->use();
+
+            glwidget.frame["square"].pos = glm::vec4(-1.0f, 0.0f, -0.2f, 1.0f);
 
             glwidget.shader["texture"]->set_uniform_1i("texture_1", glwidget.texture_slot["lenna"]);
-            glwidget.shader["texture"]->set_unifrom_4fv("MVMat", glwidget.viewMat * glwidget.frame["square"]->matrix());
+            glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
+            glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["square"].matrix());
             glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
 
             glwidget.geometry["square"]->render();
-            //--------figure 1--------
+            //--------object 2--------
 
-            //--------figure 2--------
-            // glwidget.shader["basic"]->use();
+            //--------object 3--------
+            glwidget.shader["basic"]->use();
 
-            // glwidget.shader["basic"]->set_unifrom_4fv("MVMat", glwidget.viewMat);
-            // glwidget.shader["basic"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+            glwidget.frame["axes"].pos = glm::vec4(-2.0f, 0.0f, -3.0f, 1.0f);
 
-            // glwidget.geometry["axes"]->render();
-            //--------figure 2--------
+            glwidget.shader["basic"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
+            glwidget.shader["basic"]->set_unifrom_4fv("ModelMat", glwidget.frame["axes"].matrix());
+            glwidget.shader["basic"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
 
-            //--------figure 3--------
-            // glwidget.shader["basic"]->use();
+            glwidget.geometry["axes"]->render();
+            //--------object 3--------
 
-            // glwidget.shader["basic"]->set_unifrom_4fv("MVMat", viewMat);
-            // glwidget.shader["basic"]->set_unifrom_4fv("ProjMat", projMat);
+            //--------object 4--------
+            glwidget.shader["basic"]->use();
 
-            // glwidget.geometry["pyramid"]->render();
-            //--------figure 3--------
+            glwidget.frame["pyramid"].pos = glm::vec4(-3.0f, 0.0f, -4.2f, 1.0f);
+
+            glwidget.shader["basic"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
+            glwidget.shader["basic"]->set_unifrom_4fv("ModelMat", glwidget.frame["pyramid"].matrix());
+            glwidget.shader["basic"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+
+            glwidget.geometry["pyramid"]->render();
+            //--------object 4--------
+
+            //--------object 5--------
+            glwidget.shader["texture"]->use();
+
+            glwidget.frame["square"].pos = glm::vec4(2.0f, 1.2f, -5.0f, 1.0f);
+
+            glwidget.shader["texture"]->set_uniform_1i("texture_1", glwidget.texture_slot["moon"]);
+            glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
+            glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["square"].matrix());
+            glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+            glwidget.geometry["square"]->render();
+            //--------object 5--------
 
             glfwSwapBuffers(glwidget.glfw_window); // Swap front and back buffers
 
@@ -104,7 +135,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 
 void key_press_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-    float speed = 0.1f;
+    float speed = 0.25f;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         glwidget.main_camera.pos += speed * glwidget.main_camera.forward;
@@ -133,7 +164,7 @@ void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
     }
 
     glm::vec4 camera_init_forward = glm::normalize(glm::vec4(0, 0, -1, 1));
-    glwidget.main_camera.forward = glm::rotate(glwidget.identity, float(xpos / 100.0), glm::vec3(0.0f, 1.0f, 0.0f)) * camera_init_forward;
+    glwidget.main_camera.forward = glm::rotate(glwidget.identity, float(xpos / 100.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * camera_init_forward;
     glm::vec3 sx = glm::normalize(glwidget.main_camera.s());
-    glwidget.main_camera.forward = glm::rotate(glwidget.identity, float(ypos / 100.0), sx) * glm::vec4(glwidget.main_camera.forward, 1.0f);
+    glwidget.main_camera.forward = glm::rotate(glwidget.identity, float(ypos / 100.0f), sx) * glm::vec4(glwidget.main_camera.forward, 1.0f);
 }
