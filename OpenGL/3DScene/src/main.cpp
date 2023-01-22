@@ -120,6 +120,8 @@ int main(void)
             glwidget.shader["basic"]->use();
 
             glwidget.frame["pyramid"].pos = glm::vec4(-3.0f, 0.0f, -4.2f, 1.0f);
+            glwidget.frame["pyramid"].forward = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+            glwidget.frame["pyramid"].up = glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
 
             glwidget.shader["basic"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
             glwidget.shader["basic"]->set_unifrom_4fv("ModelMat", glwidget.frame["pyramid"].matrix());
@@ -211,7 +213,19 @@ int main(void)
             glwidget.geometry["light_ads_per_fragment"]->set_attribute(2, normals, 4);
 
             glwidget.geometry["light_ads_per_fragment"]->render();
-            //--------object 0--------
+            //--------object 9--------
+
+            //--------object 9--------
+            glwidget.shader["basic"]->use();
+
+            glwidget.frame["cube"].pos = glm::vec4(-4.75f, 0.0f, -4.2f, 1.0f);
+
+            glwidget.shader["basic"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
+            glwidget.shader["basic"]->set_unifrom_4fv("ModelMat", glwidget.frame["cube"].matrix());
+            glwidget.shader["basic"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+
+            glwidget.geometry["cube"]->render();
+            //--------object 9--------
 
             glfwSwapBuffers(glwidget.glfw_window); // Swap front and back buffers
 

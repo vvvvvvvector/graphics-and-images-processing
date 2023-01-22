@@ -10,7 +10,7 @@
 #include "glslprogram.h"
 #include "geometry.h"
 #include "texture2d.h"
-#include "primitives.h"
+#include "builder.h"
 #include "frame.h"
 #include "camera.h"
 

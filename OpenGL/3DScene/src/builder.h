@@ -1,9 +1,9 @@
-#ifndef PRIMITIVES_H
-#define PRIMITIVES_H
+#ifndef BUILDER_H
+#define BUILDER_H
 
 #include "geometry.h"
 
-Geometry *create_main_axes();
+Geometry *create_axes();
 
 Geometry *create_pyramid();
 
@@ -11,4 +11,6 @@ Geometry *create_triangle();
 
 Geometry *create_square();
 
-#endif // PRIMITIVES_H
+Geometry *create_cube();
+
+#endif // BUILDER_H

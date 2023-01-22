@@ -8,6 +8,7 @@ GLWidget::GLWidget()
     init_widget();
 
     identity = glm::mat4(1.0f);
+
     projMat = glm::perspective(30.0f, WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.01f, 15.0f);
 }
 
@@ -57,8 +58,11 @@ void GLWidget::create_geometry()
     frame["earth"] = Frame();
     frame["moon"] = Frame();
 
-    geometry["axes"] = create_main_axes();
+    geometry["axes"] = create_axes();
     frame["axes"] = Frame();
+
+    geometry["cube"] = create_cube();
+    frame["cube"] = Frame();
 }
 
 void GLWidget::create_textures()
