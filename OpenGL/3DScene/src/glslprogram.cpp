@@ -116,3 +116,13 @@ void GLSLProgram::set_unifrom_4fv(const char *name, glm::mat4 mat)
 {
     glUniformMatrix4fv(glGetUniformLocation(program, name), 1, GL_FALSE, &mat[0][0]);
 }
+
+void GLSLProgram::set_uniform_vec3(const char *name, glm::vec3 vec)
+{
+    glUniform3fv(glGetUniformLocation(program, name), 1, &vec.x);
+}
+
+void GLSLProgram::set_uniform_vec4(const char *name, glm::vec4 vec)
+{
+    glUniform4fv(glGetUniformLocation(program, name), 1, &vec.x);
+}

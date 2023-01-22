@@ -31,12 +31,19 @@ void GLWidget::create_shaders()
     shader["texture"] = new GLSLProgram();
     shader["texture"]->compile_shaders_from_file("res/shaders/one_texture.shader");
     shader["texture"]->link();
+
+    shader["ads"] = new GLSLProgram();
+    shader["ads"]->compile_shaders_from_file("res/shaders/ads.shader");
+    shader["ads"]->link();
 }
 
 void GLWidget::create_geometry()
 {
     geometry["pyramid"] = create_pyramid();
     frame["pyramid"] = Frame();
+
+    geometry["light_ads"] = create_square();
+    frame["light_ads"] = Frame();
 
     geometry["square"] = create_square();
     frame["square"] = Frame();

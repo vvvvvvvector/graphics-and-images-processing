@@ -8,20 +8,29 @@ void mouse_move_callback(GLFWwindow *window, double xpos, double ypos);
 
 int main(void)
 {
-    //----------------init----------------
-    const double fps_limit = 1.0 / 60.0;
-    double last_frame_time = 0;
-    //----------------init----------------
-
     //----------------callbacks----------------
     glfwSetFramebufferSizeCallback(glwidget.glfw_window, framebuffer_size_callback);
     glfwSetKeyCallback(glwidget.glfw_window, key_press_callback);
     glfwSetCursorPosCallback(glwidget.glfw_window, mouse_move_callback);
     //----------------callbacks----------------
 
+    //----------------init----------------
+    const double fps_limit = 1.0 / 60.0;
+    double last_frame_time = 0;
+    //----------------init----------------
+
+    //----------------for light square----------------
+    glm::vec3 normals[] = {{0, 0, 1}, {0, 0, 1}, {0, 0, 1}, {0, 0, 1}};
+
+    glm::vec3 light_position(0.0f, 0.0f, 0.0f);
+    glm::vec4 light_color(1.0f, 1.0f, 1.0f, 1.0f);
+    glm::vec4 material_color(0.35f, 0.6f, 0.75f, 1.0f);
+    //----------------for light square----------------
+
     float alpha = 0.0f;
     float beta = 0.0f;
     float gamma = 0.0f;
+    float teta = 0.0f;
 
     float blue_value = 0.0f;
     float i = 1.0;
@@ -48,6 +57,11 @@ int main(void)
             gamma = 0.0f;
 
         gamma += M_PI / 600000.0f;
+
+        if (teta > 2 * M_PI)
+            teta = 0.0f;
+
+        teta += M_PI / 550000.0f;
 
         if (blue_value > 1.0f)
             i = -1;
@@ -157,6 +171,26 @@ int main(void)
 
             glwidget.geometry["square"]->render();
             //--------object 7--------
+
+            //--------object 8--------
+            glwidget.shader["ads"]->use();
+
+            glm::mat4 rotate_light_square = glm::rotate(glwidget.identity, teta, glm::vec3(0, 0, 1));
+            glwidget.frame["light_ads"].pos = glm::vec4(-3.5f, 0.0f, -1.0f, 1.0f);
+            glwidget.frame["light_ads"].up = rotate_light_square * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+            glwidget.shader["ads"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
+            glwidget.shader["ads"]->set_unifrom_4fv("ModelMat", glwidget.frame["light_ads"].matrix());
+            glwidget.shader["ads"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+
+            glwidget.shader["ads"]->set_uniform_vec3("LightPosition", light_position);
+            glwidget.shader["ads"]->set_uniform_vec4("LightColor", light_color);
+            glwidget.shader["ads"]->set_uniform_vec4("MaterialColor", material_color);
+
+            glwidget.geometry["light_ads"]->set_attribute(2, normals, 4);
+
+            glwidget.geometry["light_ads"]->render();
+            //--------object 8--------
 
             glfwSwapBuffers(glwidget.glfw_window); // Swap front and back buffers
 
