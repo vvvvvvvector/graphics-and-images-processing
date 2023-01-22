@@ -14,7 +14,7 @@ glm::vec3 Camera::s()
 
 glm::mat4 Camera::matrix()
 {
-    glm::mat4 mat = glm::mat4(1.0);
+    glm::mat4 mat = glm::mat4(0.0f);
     glm::vec3 xx = s();
     glm::vec3 f_norm = glm::normalize(forward);
     glm::vec3 u_norm = glm::normalize(glm::cross(xx, forward));
@@ -31,7 +31,7 @@ glm::mat4 Camera::matrix()
     mat[1][2] = -f_norm.y;
     mat[2][2] = -f_norm.z;
 
-    mat *= glm::translate(glm::mat4(1.0f), glm::vec3(-pos.x, -pos.y, -pos.z));
+    mat[3][3] = 1.0f;
 
-    return mat;
+    return mat * glm::translate(glm::mat4(1.0f), glm::vec3(-pos.x, -pos.y, -pos.z));
 }

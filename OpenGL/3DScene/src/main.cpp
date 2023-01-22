@@ -201,17 +201,16 @@ void key_press_callback(GLFWwindow *window, int key, int scancode, int action, i
 
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         glwidget.main_camera.pos -= speed * glwidget.main_camera.up;
+
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 void mouse_move_callback(GLFWwindow *window, double xpos, double ypos)
 {
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
-    {
-        return;
-    }
-
     glm::vec4 camera_init_forward = glm::normalize(glm::vec4(0, 0, -1, 1));
     glwidget.main_camera.forward = glm::rotate(glwidget.identity, float(xpos / 100.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * camera_init_forward;
+
     glm::vec3 sx = glm::normalize(glwidget.main_camera.s());
     glwidget.main_camera.forward = glm::rotate(glwidget.identity, float(ypos / 100.0f), sx) * glm::vec4(glwidget.main_camera.forward, 1.0f);
 }

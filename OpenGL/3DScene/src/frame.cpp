@@ -14,15 +14,24 @@ glm::vec3 Frame::s()
 
 glm::mat4 Frame::matrix()
 {
-    glm::mat4 mat = glm::mat4(1.0);
+    glm::mat4 mat = glm::mat4(0.0f);
     glm::vec3 xx = s();
     glm::vec3 f_norm = glm::normalize(forward);
     glm::vec3 u_norm = glm::normalize(up);
 
-    mat[0] = glm::vec4(xx, 0.0);
-    mat[1] = glm::vec4(u_norm, 0.0);
-    mat[2] = glm::vec4(f_norm, 0.0);
-    mat[3] = glm::vec4(pos, 1.0);
+    mat[0][0] = xx.x;
+    mat[1][0] = u_norm.x;
+    mat[2][0] = f_norm.x;
 
-    return mat;
+    mat[0][1] = xx.y;
+    mat[1][1] = u_norm.y;
+    mat[2][1] = f_norm.y;
+
+    mat[0][2] = xx.z;
+    mat[1][2] = u_norm.z;
+    mat[2][2] = f_norm.z;
+
+    mat[3][3] = 1.0f;
+
+    return glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, pos.z)) * mat;
 }
