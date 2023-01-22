@@ -7,13 +7,14 @@
 #include <map>
 
 #include "mathgl.h"
+#include "utils.h"
 
 class Geometry
 {
 public:
-    GLenum mode;
-
     Geometry();
+
+    GLenum mode;
 
     void render();
 

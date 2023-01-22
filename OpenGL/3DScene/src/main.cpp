@@ -210,7 +210,7 @@ int main(void)
             glwidget.shader["ads_per_fragment"]->set_uniform_vec4("LightColor", light_color);
             glwidget.shader["ads_per_fragment"]->set_uniform_vec4("MaterialColor", material_color_ads_per_fragment);
 
-            glwidget.geometry["light_ads_per_fragment"]->set_attribute(2, normals, 4);
+            glwidget.geometry["light_ads_per_fragment"]->set_attribute((int)Attributes::normal, normals, 4);
 
             glwidget.geometry["light_ads_per_fragment"]->render();
             //--------object 9--------

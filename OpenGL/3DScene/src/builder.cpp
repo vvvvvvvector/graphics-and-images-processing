@@ -2,8 +2,6 @@
 
 Geometry *create_axes()
 {
-    Geometry *geometry = new Geometry();
-
     glm::vec3 positions[] = {
         {0.0f, 0.0f, 0.0f},
         {0.7f, 0.0f, 0.0f},
@@ -20,10 +18,13 @@ Geometry *create_axes()
         {0.7f, 0.5f, 1.0f, 1.0f},
         {0.7f, 0.5f, 1.0f, 1.0f}};
 
+    Geometry *geometry = new Geometry();
+
     geometry->mode = GL_LINES;
 
-    geometry->set_vertices(0, positions, 6);
-    geometry->set_attribute(1, colors, 6);
+    geometry->set_vertices((int)Attributes::position, positions, 6);
+
+    geometry->set_attribute((int)Attributes::color, colors, 6);
 
     return geometry;
 }
@@ -57,8 +58,9 @@ Geometry *create_pyramid()
                             4, 0, 3};
     geometry->set_indices(indices, size);
 
-    geometry->set_vertices(0, positions, 5);
-    geometry->set_attribute(1, colors, 5);
+    geometry->set_vertices((int)Attributes::position, positions, 5);
+
+    geometry->set_attribute((int)Attributes::color, colors, 5);
 
     return geometry;
 }
@@ -85,8 +87,9 @@ Geometry *create_triangle()
     GLuint indices[size] = {1, 0, 3};
     geometry->set_indices(indices, size);
 
-    geometry->set_vertices(0, positions, 4);
-    geometry->set_attribute(1, colors, 4);
+    geometry->set_vertices((int)Attributes::position, positions, 4);
+
+    geometry->set_attribute((int)Attributes::color, colors, 4);
 
     return geometry;
 }
@@ -119,9 +122,10 @@ Geometry *create_square()
     GLuint indices[size] = {0, 1, 3, 2, 1, 3};
     geometry->set_indices(indices, size);
 
-    geometry->set_vertices(0, positions, 4);
-    geometry->set_attribute(1, colors, 4);
-    geometry->set_attribute(7, texture_coordinates, 4);
+    geometry->set_vertices((int)Attributes::position, positions, 4);
+
+    geometry->set_attribute((int)Attributes::color, colors, 4);
+    geometry->set_attribute((int)Attributes::texture, texture_coordinates, 4);
 
     return geometry;
 }
@@ -169,8 +173,9 @@ Geometry *create_cube()
         1, 5, 7};
     geometry->set_indices(indices, size);
 
-    geometry->set_vertices(0, positions, 8);
-    geometry->set_attribute(1, colors, 8);
+    geometry->set_vertices((int)Attributes::position, positions, 8);
+    
+    geometry->set_attribute((int)Attributes::color, colors, 8);
 
     return geometry;
 }
