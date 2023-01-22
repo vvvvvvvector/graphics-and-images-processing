@@ -35,6 +35,10 @@ void GLWidget::create_shaders()
     shader["ads"] = new GLSLProgram();
     shader["ads"]->compile_shaders_from_file("res/shaders/ads.shader");
     shader["ads"]->link();
+
+    shader["ads_per_fragment"] = new GLSLProgram();
+    shader["ads_per_fragment"]->compile_shaders_from_file("res/shaders/ads_per_fragment.shader");
+    shader["ads_per_fragment"]->link();
 }
 
 void GLWidget::create_geometry()
@@ -44,6 +48,9 @@ void GLWidget::create_geometry()
 
     geometry["light_ads"] = create_square();
     frame["light_ads"] = Frame();
+
+    geometry["light_ads_per_fragment"] = create_square();
+    frame["light_ads_per_fragment"] = Frame();
 
     geometry["square"] = create_square();
     frame["square"] = Frame();

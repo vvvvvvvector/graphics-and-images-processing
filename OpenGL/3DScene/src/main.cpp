@@ -19,13 +19,15 @@ int main(void)
     double last_frame_time = 0;
     //----------------init----------------
 
-    //----------------for light square----------------
+    //----------------light----------------
     glm::vec3 normals[] = {{0, 0, 1}, {0, 0, 1}, {0, 0, 1}, {0, 0, 1}};
 
     glm::vec3 light_position(0.0f, 0.0f, 0.0f);
     glm::vec4 light_color(1.0f, 1.0f, 1.0f, 1.0f);
-    glm::vec4 material_color(0.35f, 0.6f, 0.75f, 1.0f);
-    //----------------for light square----------------
+
+    glm::vec4 material_color_ads(0.35f, 0.6f, 0.75f, 1.0f);
+    glm::vec4 material_color_ads_per_fragment(0.35f, 0.2f, 0.34f, 1.0f);
+    //----------------light----------------
 
     float alpha = 0.0f;
     float beta = 0.0f;
@@ -92,7 +94,7 @@ int main(void)
             //--------object 2--------
             glwidget.shader["texture"]->use();
 
-            glwidget.frame["square"].pos = glm::vec4(-1.0f, 0.0f, -0.2f, 1.0f);
+            glwidget.frame["square"].pos = glm::vec4(-2.0f, 0.0f, -7.0f, 1.0f);
 
             glwidget.shader["texture"]->set_uniform_1i("texture_1", glwidget.texture_slot["lenna"]);
             glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
@@ -145,7 +147,7 @@ int main(void)
             glm::mat4 rotate_earth_orbit = glm::rotate(glwidget.identity, alpha, glm::vec3(0.0f, 0.0f, 1.0f));
             glm::mat4 rotate_earth = glm::rotate(glwidget.identity, beta, glm::vec3(1.0f, 1.0f, 0.0f));
 
-            glwidget.frame["earth"].pos = rotate_earth_orbit * glm::vec4(1.2, 0.0f, -2.8f, 1.0f);
+            glwidget.frame["earth"].pos = rotate_earth_orbit * glm::vec4(1.5, 0.0f, -2.8f, 1.0f);
             glwidget.frame["earth"].up = rotate_earth * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
             glwidget.shader["texture"]->set_uniform_1i("texture_1", glwidget.texture_slot["earth"]);
@@ -185,12 +187,31 @@ int main(void)
 
             glwidget.shader["ads"]->set_uniform_vec3("LightPosition", light_position);
             glwidget.shader["ads"]->set_uniform_vec4("LightColor", light_color);
-            glwidget.shader["ads"]->set_uniform_vec4("MaterialColor", material_color);
+            glwidget.shader["ads"]->set_uniform_vec4("MaterialColor", material_color_ads);
 
             glwidget.geometry["light_ads"]->set_attribute(2, normals, 4);
 
             glwidget.geometry["light_ads"]->render();
             //--------object 8--------
+
+            //--------object 9--------
+            glwidget.shader["ads_per_fragment"]->use();
+
+            glwidget.frame["light_ads_per_fragment"].pos = glm::vec4(-1.5f, 0.0f, -1.0f, 1.0f);
+            glwidget.frame["light_ads_per_fragment"].up = rotate_light_square * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+            glwidget.shader["ads_per_fragment"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
+            glwidget.shader["ads_per_fragment"]->set_unifrom_4fv("ModelMat", glwidget.frame["light_ads_per_fragment"].matrix());
+            glwidget.shader["ads_per_fragment"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+
+            glwidget.shader["ads_per_fragment"]->set_uniform_vec3("LightPosition", light_position);
+            glwidget.shader["ads_per_fragment"]->set_uniform_vec4("LightColor", light_color);
+            glwidget.shader["ads_per_fragment"]->set_uniform_vec4("MaterialColor", material_color_ads_per_fragment);
+
+            glwidget.geometry["light_ads_per_fragment"]->set_attribute(2, normals, 4);
+
+            glwidget.geometry["light_ads_per_fragment"]->render();
+            //--------object 0--------
 
             glfwSwapBuffers(glwidget.glfw_window); // Swap front and back buffers
 
