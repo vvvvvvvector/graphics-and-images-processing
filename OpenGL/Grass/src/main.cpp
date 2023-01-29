@@ -24,12 +24,9 @@ int main(void)
     float beta = 0.0f;
     float gamma = 0.0f;
 
-    int amount = 20;
+    int amount = 25;
     float offset = 0.5f;
     // ----------------grass----------------
-
-    float blue_value = 0.0f;
-    float i = 1.0;
 
     while (!glfwWindowShouldClose(glwidget.glfw_window)) // Loop until the user closes the window
     {
@@ -54,22 +51,21 @@ int main(void)
 
         gamma += M_PI / 600000.0f;
 
-        blue_value += 0.000001f * i;
-
         if ((now - last_frame_time) >= fps_limit)
         {
-            glClearColor(0.2f, 0.3f, blue_value, 0.9f);
+            glClearColor(0.2f, 0.5f, 0.3f, 0.9f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
+
+            glwidget.shader["texture"]->use();
 
             for (float z = -amount, offset_z = -10.0f; z < amount; z += 2.0f, offset_z += offset)
             {
                 for (float x = -amount, offset_x = 0.0f; x < amount; x += 2.0f, offset_x += offset)
                 {
-                    //--------grass 1--------
-                    glwidget.shader["texture"]->use();
-
                     glwidget.frame["square"].pos = glm::vec4(offset_x, 0.0f, offset_z, 1.0f);
+
+                    //--------grass 1--------
                     glwidget.frame["square"].forward = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
                     glwidget.shader["texture"]->set_uniform_1i("grass_texture", glwidget.texture_slot["grass"]);
@@ -82,9 +78,6 @@ int main(void)
                     //--------grass 1--------
 
                     //--------grass 2--------
-                    glwidget.shader["texture"]->use();
-
-                    glwidget.frame["square"].pos = glm::vec4(offset_x, 0.0f, offset_z, 1.0f);
                     glwidget.frame["square"].forward = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
                     glwidget.shader["texture"]->set_uniform_1i("grass_texture", glwidget.texture_slot["grass"]);
@@ -97,9 +90,6 @@ int main(void)
                     //--------grass 2--------
 
                     //--------grass 3--------
-                    glwidget.shader["texture"]->use();
-
-                    glwidget.frame["square"].pos = glm::vec4(offset_x, 0.0f, offset_z, 1.0f);
                     glwidget.frame["square"].forward = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
                     glwidget.shader["texture"]->set_uniform_1i("grass_texture", glwidget.texture_slot["grass"]);
