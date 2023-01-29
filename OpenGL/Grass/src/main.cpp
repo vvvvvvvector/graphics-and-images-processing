@@ -70,9 +70,9 @@ int main(void)
 
                     glwidget.shader["texture"]->set_uniform_1i("grass_texture", glwidget.texture_slot["grass"]);
                     glwidget.shader["texture"]->set_uniform_1f("angle", alpha);
-                    glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
-                    glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["square"].matrix());
-                    glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+                    glwidget.shader["texture"]->set_uniform_4fv("ViewMat", glwidget.viewMat);
+                    glwidget.shader["texture"]->set_uniform_4fv("ModelMat", glwidget.frame["square"].matrix());
+                    glwidget.shader["texture"]->set_uniform_4fv("ProjMat", glwidget.projMat);
 
                     glwidget.geometry["square"]->render();
                     //--------grass 1--------
@@ -82,9 +82,9 @@ int main(void)
 
                     glwidget.shader["texture"]->set_uniform_1i("grass_texture", glwidget.texture_slot["grass"]);
                     glwidget.shader["texture"]->set_uniform_1f("angle", beta);
-                    glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
-                    glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["square"].matrix());
-                    glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+                    glwidget.shader["texture"]->set_uniform_4fv("ViewMat", glwidget.viewMat);
+                    glwidget.shader["texture"]->set_uniform_4fv("ModelMat", glwidget.frame["square"].matrix());
+                    glwidget.shader["texture"]->set_uniform_4fv("ProjMat", glwidget.projMat);
 
                     glwidget.geometry["square"]->render();
                     //--------grass 2--------
@@ -94,9 +94,9 @@ int main(void)
 
                     glwidget.shader["texture"]->set_uniform_1i("grass_texture", glwidget.texture_slot["grass"]);
                     glwidget.shader["texture"]->set_uniform_1f("angle", gamma);
-                    glwidget.shader["texture"]->set_unifrom_4fv("ViewMat", glwidget.viewMat);
-                    glwidget.shader["texture"]->set_unifrom_4fv("ModelMat", glwidget.frame["square"].matrix());
-                    glwidget.shader["texture"]->set_unifrom_4fv("ProjMat", glwidget.projMat);
+                    glwidget.shader["texture"]->set_uniform_4fv("ViewMat", glwidget.viewMat);
+                    glwidget.shader["texture"]->set_uniform_4fv("ModelMat", glwidget.frame["square"].matrix());
+                    glwidget.shader["texture"]->set_uniform_4fv("ProjMat", glwidget.projMat);
 
                     glwidget.geometry["square"]->render();
                     //--------grass 3--------

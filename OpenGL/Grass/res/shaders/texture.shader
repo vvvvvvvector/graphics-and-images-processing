@@ -4,8 +4,8 @@
 uniform mat4 ProjMat;
 uniform mat4 ViewMat;
 uniform mat4 ModelMat;
-uniform float angle;
 
+uniform float angle;
 float value = sin(angle) * sin(-angle) * cos(angle);
 
 layout (location = 0) in vec4 vertex_position;
