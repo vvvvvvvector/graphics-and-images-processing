@@ -32,17 +32,17 @@ int main(void)
     Geometry *pyramid = create_pyramid();
 
     GLSLProgram *shader = new GLSLProgram();
-    shader->compile_shaders_from_file("res/shaders/base_affine.shader");
+    shader->compile_shaders_from_file("res/shaders/one_texture.shader");
     shader->link();
     shader->use();
 
-    // unsigned int texture_1_slot = 15;
-    // Texture2D *texture_1 = new Texture2D("res/textures/metal_2.jpg", texture_1_slot);
-    // texture_1->bind(texture_1_slot);
-    // shader->set_uniform_1i("texture_1", texture_1_slot);
+    unsigned int texture_1_slot = 15;
+    Texture2D *texture_1 = new Texture2D("res/textures/metal_2.jpg", texture_1_slot);
+    texture_1->bind(texture_1_slot);
+    shader->set_uniform_1i("texture_1", texture_1_slot);
 
     // unsigned int texture_2_slot = 16;
-    // Texture2D *texture_2 = new Texture2D("res/textures/wood.png", texture_2_slot);
+    // Texture2D *texture_2 = new Texture2D("res/textures/wood.jpg", texture_2_slot);
     // texture_2->bind(texture_2_slot);
     // shader->set_uniform_1i("texture_2", texture_2_slot);
 
@@ -75,8 +75,8 @@ int main(void)
             glClearColor(0.2f, 0.3f, beta, 0.9f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            // square->render();
-            pyramid->render();
+            square->render();
+            // pyramid->render();
 
             glfwSwapBuffers(window); // Swap front and back buffers
 

@@ -1,3 +1,3 @@
 # Grass rendering
 
-![grass](../../assets/grass.gif)
+![grass](../../assets/grass.png)
