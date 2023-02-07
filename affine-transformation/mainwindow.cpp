@@ -3,15 +3,19 @@
 
 #include <QFileDialog>
 
-float* multiply_transformations(float *, float *);
+struct Matrix3x3 {
+    float matrix3x3[9] = {0.0f};
+};
 
-float* identity();
-float* reflection_x();
-float* reflection_y();
-float* translation(float, float);
-float* scale(float, float);
-float* rotate(float);
-float* shear(float, float);
+Matrix3x3 multiply_transformations(float *, float *);
+
+Matrix3x3 identity();
+Matrix3x3 reflection_x();
+Matrix3x3 reflection_y();
+Matrix3x3 translation(float, float);
+Matrix3x3 scale(float, float);
+Matrix3x3 rotate(float);
+Matrix3x3 shear(float, float);
 
 QImage apply_affine_transformation(const QImage &, float *);
 
@@ -29,31 +33,31 @@ MainWindow::MainWindow(QWidget *parent)
         original_image.load(file_name);
 
         // 1. Identity
-        // float* matrix = identity();
+        // Matrix3x3 matrix = identity();
 
         // 2. Reflection x
-        // float* reflection_x_matrix = reflection_x();
-        // float *translation_matrix = translation(original_image.width() - 1, 0);
-        // float *matrix = multiply_transformations(reflection_x_matrix, translation_matrix);
+        // Matrix3x3 reflection_x_matrix = reflection_x();
+        // Matrix3x3 translation_matrix = translation(original_image.width() - 1, 0);
+        // Matrix3x3 matrix = multiply_transformations(reflection_x_matrix.matrix3x3, translation_matrix.matrix3x3);
 
         // 3. Reflection y
-        // float* reflection_y_matrix = reflection_y();
-        // float *translation_matrix = translation(0, original_image.height() - 1);
-        // float *matrix = multiply_transformations(reflection_y_matrix, translation_matrix);
+        // Matrix3x3 reflection_y_matrix = reflection_y();
+        // Matrix3x3 translation_matrix = translation(0, original_image.height() - 1);
+        // Matrix3x3 matrix = multiply_transformations(reflection_y_matrix.matrix3x3, translation_matrix.matrix3x3);
 
         // 4. Translation
-        // float *matrix = translation(original_image.width() / 2, 0);
+        // Matrix3x3 matrix = translation(original_image.width() / 2, 0);
 
         // 5. Scale
-        float *matrix = scale(1.5f, 1.0f);
+        // Matrix3x3 matrix = scale(1.5f, 1.0f);
 
         // 6. Rotate
-        // float *matrix = rotate(M_PI / 6);
+        Matrix3x3 matrix = rotate(M_PI / 6);
 
         // 7. Shear
-        // float *matrix = shear(0.5f, 0.0f);
+        // Matrix3x3 matrix = shear(0.5f, 0.0f);
 
-        QImage process_image = apply_affine_transformation(original_image, matrix);
+        QImage process_image = apply_affine_transformation(original_image, matrix.matrix3x3);
 
         ui->image->setPixmap(QPixmap::fromImage(process_image));
     }
@@ -64,90 +68,90 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-float* multiply_transformations(float *first, float *second) {
-    static float matrix3x3[9] = {0.0f};
+Matrix3x3 multiply_transformations(float *first, float *second) {
+    Matrix3x3 m;
 
-    matrix3x3[0] = first[0] * second[0] + first[1] * second[3] + first[2] * second[6];
-    matrix3x3[1] = first[0] * second[1] + first[1] * second[4] + first[2] * second[7];
-    matrix3x3[2] = first[0] * second[2] + first[1] * second[5] + first[2] * second[8];
-    matrix3x3[3] = first[3] * second[0] + first[4] * second[3] + first[5] * second[6];
-    matrix3x3[4] = first[3] * second[1] + first[4] * second[4] + first[5] * second[7];
-    matrix3x3[5] = first[3] * second[2] + first[4] * second[5] + first[5] * second[8];
-    matrix3x3[6] = first[6] * second[0] + first[7] * second[3] + first[8] * second[6];
-    matrix3x3[7] = first[6] * second[1] + first[7] * second[4] + first[8] * second[7];
-    matrix3x3[8] = first[6] * second[2] + first[7] * second[5] + first[8] * second[8];
+    m.matrix3x3[0] = first[0] * second[0] + first[1] * second[3] + first[2] * second[6];
+    m.matrix3x3[1] = first[0] * second[1] + first[1] * second[4] + first[2] * second[7];
+    m.matrix3x3[2] = first[0] * second[2] + first[1] * second[5] + first[2] * second[8];
+    m.matrix3x3[3] = first[3] * second[0] + first[4] * second[3] + first[5] * second[6];
+    m.matrix3x3[4] = first[3] * second[1] + first[4] * second[4] + first[5] * second[7];
+    m.matrix3x3[5] = first[3] * second[2] + first[4] * second[5] + first[5] * second[8];
+    m.matrix3x3[6] = first[6] * second[0] + first[7] * second[3] + first[8] * second[6];
+    m.matrix3x3[7] = first[6] * second[1] + first[7] * second[4] + first[8] * second[7];
+    m.matrix3x3[8] = first[6] * second[2] + first[7] * second[5] + first[8] * second[8];
 
-    return matrix3x3;
+    return m;
 }
 
-float* identity() {
-    static float matrix3x3[9] = {0.0f};
+Matrix3x3 identity() {
+    Matrix3x3 m;
 
-    matrix3x3[0] = 1.0f; matrix3x3[1] = 0.0f; matrix3x3[2] = 0.0f;
-    matrix3x3[3] = 0.0f; matrix3x3[4] = 1.0f; matrix3x3[5] = 0.0f;
-    matrix3x3[6] = 0.0f; matrix3x3[7] = 0.0f; matrix3x3[8] = 1.0f;
+    m.matrix3x3[0] = 1.0f; m.matrix3x3[1] = 0.0f; m.matrix3x3[2] = 0.0f;
+    m.matrix3x3[3] = 0.0f; m.matrix3x3[4] = 1.0f; m.matrix3x3[5] = 0.0f;
+    m.matrix3x3[6] = 0.0f; m.matrix3x3[7] = 0.0f; m.matrix3x3[8] = 1.0f;
 
-    return matrix3x3;
+    return m;
 }
 
-float* reflection_x() {
-    static float matrix3x3[9] = {0.0f};
+Matrix3x3 reflection_x() {
+    Matrix3x3 m;
 
-    matrix3x3[0] = -1.0f; matrix3x3[1] = 0.0f; matrix3x3[2] = 0.0f;
-    matrix3x3[3] = 0.0f; matrix3x3[4] = 1.0f; matrix3x3[5] = 0.0f;
-    matrix3x3[6] = 0.0f; matrix3x3[7] = 0.0f; matrix3x3[8] = 1.0f;
+    m.matrix3x3[0] = -1.0f; m.matrix3x3[1] = 0.0f; m.matrix3x3[2] = 0.0f;
+    m.matrix3x3[3] = 0.0f; m.matrix3x3[4] = 1.0f; m.matrix3x3[5] = 0.0f;
+    m.matrix3x3[6] = 0.0f; m.matrix3x3[7] = 0.0f; m.matrix3x3[8] = 1.0f;
 
-    return matrix3x3;
+    return m;
 }
 
-float* reflection_y() {
-    static float matrix3x3[9] = {0.0f};
+Matrix3x3 reflection_y() {
+    Matrix3x3 m;
 
-    matrix3x3[0] = 1.0f; matrix3x3[1] = 0.0f; matrix3x3[2] = 0.0f;
-    matrix3x3[3] = 0.0f; matrix3x3[4] = -1.0f; matrix3x3[5] = 0.0f;
-    matrix3x3[6] = 0.0f; matrix3x3[7] = 0.0f; matrix3x3[8] = 1.0f;
+    m.matrix3x3[0] = 1.0f; m.matrix3x3[1] = 0.0f; m.matrix3x3[2] = 0.0f;
+    m.matrix3x3[3] = 0.0f; m.matrix3x3[4] = -1.0f; m.matrix3x3[5] = 0.0f;
+    m.matrix3x3[6] = 0.0f; m.matrix3x3[7] = 0.0f; m.matrix3x3[8] = 1.0f;
 
-    return matrix3x3;
+    return m;
 }
 
-float* translation(float tx, float ty) {
-    static float matrix3x3[9] = {0.0f};
+Matrix3x3 translation(float tx, float ty) {
+    Matrix3x3 m;
 
-    matrix3x3[0] = 1.0f; matrix3x3[1] = 0.0f; matrix3x3[2] = -tx;
-    matrix3x3[3] = 0.0f; matrix3x3[4] = 1.0f; matrix3x3[5] = -ty;
-    matrix3x3[6] = 0.0f; matrix3x3[7] = 0.0f; matrix3x3[8] = 1.0f;
+    m.matrix3x3[0] = 1.0f; m.matrix3x3[1] = 0.0f; m.matrix3x3[2] = -tx;
+    m.matrix3x3[3] = 0.0f; m.matrix3x3[4] = 1.0f; m.matrix3x3[5] = -ty;
+    m.matrix3x3[6] = 0.0f; m.matrix3x3[7] = 0.0f; m.matrix3x3[8] = 1.0f;
 
-    return matrix3x3;
+    return m;
 }
 
-float* scale(float sx, float sy) {
-    static float matrix3x3[9] = {0.0f};
+Matrix3x3 scale(float sx, float sy) {
+    Matrix3x3 m;
 
-    matrix3x3[0] = 1 / sx; matrix3x3[1] = 0.0f; matrix3x3[2] = 0.0f;
-    matrix3x3[3] = 0.0f; matrix3x3[4] = 1 / sy; matrix3x3[5] = 0.0f;
-    matrix3x3[6] = 0.0f; matrix3x3[7] = 0.0f; matrix3x3[8] = 1.0f;
+    m.matrix3x3[0] = 1 / sx; m.matrix3x3[1] = 0.0f; m.matrix3x3[2] = 0.0f;
+    m.matrix3x3[3] = 0.0f; m.matrix3x3[4] = 1 / sy; m.matrix3x3[5] = 0.0f;
+    m.matrix3x3[6] = 0.0f; m.matrix3x3[7] = 0.0f; m.matrix3x3[8] = 1.0f;
 
-    return matrix3x3;
+    return m;
 }
 
-float* rotate(float theta) {
-    static float matrix3x3[9] = {0.0f};
+Matrix3x3 rotate(float theta) {
+    Matrix3x3 m;
 
-    matrix3x3[0] = cos(theta); matrix3x3[1] = -sin(theta); matrix3x3[2] = 0.0f;
-    matrix3x3[3] = sin(theta); matrix3x3[4] = cos(theta); matrix3x3[5] = 0.0f;
-    matrix3x3[6] = 0.0f; matrix3x3[7] = 0.0f; matrix3x3[8] = 1.0f;
+    m.matrix3x3[0] = cos(theta); m.matrix3x3[1] = -sin(theta); m.matrix3x3[2] = 0.0f;
+    m.matrix3x3[3] = sin(theta); m.matrix3x3[4] = cos(theta); m.matrix3x3[5] = 0.0f;
+    m.matrix3x3[6] = 0.0f; m.matrix3x3[7] = 0.0f; m.matrix3x3[8] = 1.0f;
 
-    return matrix3x3;
+    return m;
 }
 
-float* shear(float sx, float sy) {
-    static float matrix3x3[9] = {0.0f};
+Matrix3x3 shear(float sx, float sy) {
+    Matrix3x3 m;
 
-    matrix3x3[0] = 1.0f; matrix3x3[1] = sx; matrix3x3[2] = 0.0f;
-    matrix3x3[3] = sy; matrix3x3[4] = 1.0f; matrix3x3[5] = 0.0f;
-    matrix3x3[6] = 0.0f; matrix3x3[7] = 0.0f; matrix3x3[8] = 1.0f;
+    m.matrix3x3[0] = 1.0f; m.matrix3x3[1] = sx; m.matrix3x3[2] = 0.0f;
+    m.matrix3x3[3] = sy; m.matrix3x3[4] = 1.0f; m.matrix3x3[5] = 0.0f;
+    m.matrix3x3[6] = 0.0f; m.matrix3x3[7] = 0.0f; m.matrix3x3[8] = 1.0f;
 
-    return matrix3x3;
+    return m;
 }
 
 QImage apply_affine_transformation(const QImage &src, float *matrix3x3) {
@@ -187,31 +191,31 @@ void MainWindow::open_image() {
         original_image.load(file_name);
 
         // 1. Identity
-        // float* matrix = identity();
+        // Matrix3x3 matrix = identity();
 
         // 2. Reflection x
-        // float* reflection_x_matrix = reflection_x();
-        // float *translation_matrix = translation(original_image.width() - 1, 0);
-        // float *matrix = multiply_transformations(reflection_x_matrix, translation_matrix);
+        // Matrix3x3 reflection_x_matrix = reflection_x();
+        // Matrix3x3 translation_matrix = translation(original_image.width() - 1, 0);
+        // Matrix3x3 matrix = multiply_transformations(reflection_x_matrix.matrix3x3, translation_matrix.matrix3x3);
 
         // 3. Reflection y
-        // float* reflection_y_matrix = reflection_y();
-        // float *translation_matrix = translation(0, original_image.height() - 1);
-        // float *matrix = multiply_transformations(reflection_y_matrix, translation_matrix);
+        Matrix3x3 reflection_y_matrix = reflection_y();
+        Matrix3x3 translation_matrix = translation(0, original_image.height() - 1);
+        Matrix3x3 matrix = multiply_transformations(reflection_y_matrix.matrix3x3, translation_matrix.matrix3x3);
 
         // 4. Translation
-        // float *matrix = translation(original_image.width() / 2, 0);
+        // Matrix3x3 matrix = translation(original_image.width() / 2, 0);
 
         // 5. Scale
-        float *matrix = scale(1.5f, 1.5f);
+        // Matrix3x3 matrix = scale(1.5f, 1.0f);
 
         // 6. Rotate
-        // float *matrix = rotate(M_PI / 6);
+        // Matrix3x3 matrix = rotate(M_PI / 6);
 
         // 7. Shear
-        // float *matrix = shear(0.5f, 0.0f);
+        // Matrix3x3 matrix = shear(0.5f, 0.0f);
 
-        QImage process_image = apply_affine_transformation(original_image, matrix);
+        QImage process_image = apply_affine_transformation(original_image, matrix.matrix3x3);
 
         ui->image->setPixmap(QPixmap::fromImage(process_image));
     }

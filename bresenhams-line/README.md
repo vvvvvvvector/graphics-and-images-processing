@@ -1,1 +1,3 @@
-![bresenhams-line-example](../images//bresenhams-lines.png)
+# Bresenhams line
+
+![bresenhams-line-example](../assets/bresenhams-lines.png)

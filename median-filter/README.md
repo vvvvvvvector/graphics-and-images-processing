@@ -1,1 +1,3 @@
-![median-filter-example](../images/median-filter.png)
+# Median filter with optimization
+
+![median-filter-example](../assets/median-filter.png)

@@ -184,19 +184,19 @@ MainWindow::MainWindow(QWidget *parent)
 
      rgb2xyz(125, 34, 129, x, y, z);
 
-     qInfo() << x << " " << y << " " << z << "\n";
+     // qInfo() << x << " " << y << " " << z << "\n";
 
      xyz2lab(x, y, z, l, a, b);
 
-     qInfo() << l << " " << a << " " << b << "\n";
+     // qInfo() << l << " " << a << " " << b << "\n";
 
      lab2xyz(l, a, b, x, y, z);
 
-     qInfo() << x << " " << y << " " << z << "\n";
+     // qInfo() << x << " " << y << " " << z << "\n";
 
      xyz2rgb(x, y, z, red, green, blue);
 
-     qInfo() << red << " " << green << " " << blue << "\n";
+     // qInfo() << red << " " << green << " " << blue << "\n";
 }
 
 MainWindow::~MainWindow()

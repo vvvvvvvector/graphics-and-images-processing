@@ -151,7 +151,7 @@ void MainWindow::open_image() {
     if (!file_name.isNull()) {
         original_image.load(file_name);
 
-        int r = 3;
+        int r = 10;
 
         std::vector<int> mask = generate_gauss_mask(r);
 

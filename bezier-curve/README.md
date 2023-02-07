@@ -1,1 +1,3 @@
-![bezier-curves-example](../images/bezier-curves.png)
+# Bezier curves
+
+![bezier-curves-example](../assets//bezier-curves.png)
