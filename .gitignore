@@ -3,6 +3,7 @@
 
 # but not
 !*.png
+!*.gif
 !*.cpp
 !*.h
 !*.ui
